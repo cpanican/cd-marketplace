@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Profile</title>
+</head>
+<body>
+	<h1>Profile</h1>
+	{% if name %}
+		<h3>Welcome back {{ name }}</h3>
+	{% else %}
+		<h3>Hi stranger</h3>
+	{% endif %}
+</body>
+</html>
