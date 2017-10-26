@@ -1,9 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Register</title>
-</head>
-<body>
-<h1>Register</h1>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block styles %}
+	{{ super() }}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/register.css') }}" />
+{% endblock %}
+
+{% block scripts %}
+	{{ super() }}
+	<script type="text/javascript" src="{{ url_for('static', filename='scripts/register.js') }}"></script>
+{% endblock %}
+
+{% block appcontent %}
+<div class="container">
+	<div class="row">
+		<h1>Registration Page</h1>
+		<form method="POST">
+			<span>Username: <input type="text" name="username"></span><br>
+			<span>Password: <input type="password" name="password"></span><br>
+			<span>Confirm Password: <input type="password" name="confirm-password"></span><br>
+			<span>Email: <input type="text" name="email"></span><br>
+			<input type="submit" name="submit" >
+		</form>
+	</div>
+</div>
+
+{% endblock %}
