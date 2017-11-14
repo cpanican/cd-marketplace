@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block styles %}
+	{{ super () }}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/home.css') }}" />
 {% endblock %}
 
@@ -46,15 +47,16 @@
 	<div id="fp-background-1">
 		<div id="big-text-1">
 			<div class="container">
-				<h1>Developer's Marketplace</h1>
-				<p>A place where clients and developers work together.</p>
+				<h1>Are you a client or developer?</h1>
+				<p>Clients can post while developers can bid on things.</p>
 				<br />
-				<a href="/register"><button class="btn btn-primary btn-lg">Get Started</button></a>
+				<a href="/register" class="btn btn-primary btn-lg">Client</a>
+				<a href="/register" class="btn btn-primary btn-lg">Developer</a>
 			</div>
 		</div>
 	</div>
 
-	<div class="container">
+	<div id="trending-section" class="container">
 		<h1 class="text-center">Trending bids</h1>
 		<div class="row text-center">
 			<div class="col col-md-4">
