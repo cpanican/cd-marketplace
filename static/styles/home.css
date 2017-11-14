@@ -5,7 +5,7 @@
 }
 
 .animate {
-  background: linear-gradient(230deg, cyan, darkblue, purple);
+  background: linear-gradient(230deg, #581845, darkblue, purple);
   background-size: 400% 400%;
   -webkit-animation: Gradient 15s ease infinite;
   -moz-animation: Gradient 15s ease infinite;
@@ -33,7 +33,7 @@
 #hero-text {
   margin: auto;
   color: white;
-  padding-top: 150px;
+  padding-top: 30vh;
   text-align: center;
 }
 
@@ -51,4 +51,18 @@ i {
 
 #entry {
   padding: 30px;
+}
+
+#fp-background-1 {
+  background-color: #2F4F4F;
+  width: 100%;
+  height: 30vh;
+}
+
+#big-text-1 {
+  color: white;
+}
+
+.card-block {
+  padding: 10px;
 }
