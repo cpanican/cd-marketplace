@@ -12,15 +12,22 @@
 
 {% block appcontent %}
 <div class="container">
-	<div class="row">
-		<h1>Log in</h1>
+		<h1>Login</h1>
 		<form method="POST">
-			<span>Username: <input type="text" name="username"></span><br>
-			<span>Password: <input type="password" name="password"></span>
-			<input type="submit" name="submit" >
+			<ul class="form">
+				<li>
+			        <label>Username <span class="required">*</span></label>
+			        <input type="text" name="username" class="field-long"/>
+			    </li>
+			    <li>
+			        <label>Password <span class="required">*</span></label>
+			        <input type="password" name="password" class="field-long"/>
+			    </li>
+			    <li>
+			        <input type="submit" name="login" />
+			    </li>
+			</ul>
 		</form>
-		<a href="/register">Register</a>
-	</div>
 </div>
 	
 
