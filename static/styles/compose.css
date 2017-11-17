@@ -1,0 +1,33 @@
+.form {
+    margin:10px auto;
+    max-width: 400px;
+    padding: 20px 10px 10px 20px;
+    font: 12px ;
+}
+.form li {
+    padding: 0;
+    display: block;
+    list-style: none;
+    margin: 10px 0px 0px 0px;
+}
+.form label{
+    margin:0px 0px 3px 0px;
+    padding:0px;
+    display:block;
+    font-weight: bold;
+}
+
+.form .field-long{
+    width: 70%;
+}
+
+
+.form input[type=submit], .form-style-1 input[type=button]{
+    background: #00BFFF;
+    padding: 10px 15px 10px 15px;
+    border: none;
+    color: white;
+}
+.form .required{
+    color:red;
+}
