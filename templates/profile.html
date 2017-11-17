@@ -12,13 +12,41 @@
 
 {% block appcontent %}
 <div class="container">
+	<br>
+	<h1>Profile</h1>
+	<h2>Hello, Maurice Harold</h2>
 	<div class="row">
-		<h1>Profile</h1>
-		{% if name %}
-			<h3>Welcome back {{ name }}</h3>
-		{% else %}
-			<h3>Hi stranger</h3>
-		{% endif %}
+		<div class="col col-md-5">
+			<img id="picture" src="http://i0.kym-cdn.com/photos/images/facebook/000/839/199/8a9.jpg">
+		</div>
+		<div class="col col-md-7">
+			<h2>Client Dashboard Summary</h2>
+			<p>Current Projects: 0</p>
+			<p>Ongoing bids: 0</p>
+			<p>Completed Projects: 0</p>
+			<p>Your rating: None</p>
+			<a href="/compose" class="btn btn-primary" role="button">Post a Bid</a>
+		</div>
+	</div>
+	<br>
+
+	<div class="row">
+		<ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link active" href="#">Active Bids</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#">Current Projects</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#">History</a>
+			</li>
+		</ul>
+	</div>
+	<div>
+		<br>
+		<h3>These are your current bids:</h3>
+		<p>Notice: You don't have any ongoing bids!</p>
 	</div>
 </div>
 
