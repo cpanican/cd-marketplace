@@ -1,6 +1,11 @@
 from flask import Flask, render_template, request
+import pymysql
 
 app = Flask(__name__)
+
+
+conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace')
+cur = conn.cursor()
 
 
 # Connect to Database
