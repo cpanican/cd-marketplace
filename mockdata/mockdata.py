@@ -1,5 +1,4 @@
 # this file inserts mock data to the database
-
 import pymysql
 
 
