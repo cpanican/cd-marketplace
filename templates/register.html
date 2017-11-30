@@ -12,30 +12,37 @@
 
 {% block appcontent %}
 <div class="container">
-		<h1>Register</h1>
-		<form method="POST">
-			<ul class="form">
-				<li>
-			        <label>Username <span class="required">*</span></label>
-			        <input type="text" name="username" class="field-long"/>
-			    </li>
-			    <li>
-			        <label>Password <span class="required">*</span></label>
-			        <input type="password" name="password" class="field-long"/>
-			    </li>
-			    <li>
-			        <label>Confirm Password <span class="required">*</span></label>
-			        <input type="password" name="confirm-password" class="field-long"/>
-			    </li>
-			    <li>
-			        <label>Email <span class="required">*</span></label>
-			        <input type="text" name="email" class="field-long"/>
-			    </li>
-			    <li>
-			        <input type="submit" name="Submit" />
-			    </li>
-			</ul>
-		</form>
+	<h1>Register</h1>
+	<form action="/register" method="POST">
+		<ul class="form">
+			<li>
+		        <label>Username <span class="required">*</span></label>
+		        <input type="text" name="username" class="field-long"/>
+		    </li>
+		    <li>
+		        <label>Password <span class="required">*</span></label>
+		        <input type="password" name="password" class="field-long"/>
+		    </li>
+		    <li>
+		        <label>Confirm Password <span class="required">*</span></label>
+		        <input type="password" name="confirm-password" class="field-long"/>
+		    </li>
+		    <li>
+		        <label>Email <span class="required">*</span></label>
+		        <input type="text" name="email" class="field-long"/>
+		    </li>
+		    <li>
+		        <input type="submit" name="Submit" />
+		    </li>
+		</ul>
+	</form>
+	<br>
+	{% if success %}
+	<div>
+		<h4>You successfully created an account! You will get a confirmation when you can use your account.</h4>
+	</div>
+	{% else %}
+	{% endif %}
 </div>
 
 {% endblock %}

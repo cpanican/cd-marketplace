@@ -1,16 +1,12 @@
 from flask import Flask, render_template, request
 import pymysql
+import sys
 
 app = Flask(__name__)
 
-
+# connect to database
 conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace')
 cur = conn.cursor()
-
-
-# Connect to Database
-#
-#
 
 
 # Functions to write
@@ -23,15 +19,31 @@ cur = conn.cursor()
 # Routes
 @app.route('/')
 def home():
-    return render_template("home.html")
+	print("Home page")
+	return render_template("home.html")
 
 @app.route('/login')
 def login():
 	return render_template("login.html")
 
-@app.route('/register')
+@app.route('/register', methods=['GET','POST'])
 def register():
-	return render_template("register.html")
+	print("Registration page")
+	if request.method == 'POST':
+		username = request.form['username']
+		password = request.form['password']
+		conf_password = request.form['confirm-password']
+		email = request.form['email']
+
+		print(username)
+		print(password)
+		print(conf_password)
+		print(email)
+
+		confirmation = True
+		return render_template("register.html", success=confirmation)
+	else:
+		return render_template("register.html")
 
 @app.route('/profile')
 def profile():
