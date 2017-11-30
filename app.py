@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect, url_for, flash
 import pymysql
 import sys
 
 app = Flask(__name__)
+app.secret_key = 'super secret key'
 
 # connect to database
 conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace')
@@ -22,9 +23,14 @@ def home():
 	print("Home page")
 	return render_template("home.html")
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-	return render_template("login.html")
+	error = None
+	if request.method == 'POST':
+		session['logged_in'] = True
+		flash('You were logged in')
+		return redirect(url_for('home'))
+	return render_template("login.html", error=error)
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -66,6 +72,10 @@ def about():
 def postings():
 	return render_template("postings.html")
 
+@app.route('/signout')
+def signout():
+	session['logged_in'] = False
+	return redirect(url_for('home'))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+	app.run(debug=True)

@@ -26,23 +26,32 @@
 
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mr-auto">
-			<li class="nav-item active">
+			<li {% if request.path == '/' %}class="active"{% endif %}>
 				<a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
 			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="/profile">Profile </a>
-			</li>
-			<li class="nav-itemn">
+			<li {% if request.path == '/about' %}class="active"{% endif %}>
 				<a class="nav-link" href="/about">About </a>
+			</li>
+			<li {% if request.path == '/postings' %}class="active"{% endif %}>
+				<a class="nav-link" href="/postings">All Postings </a>
 			</li>
 		</ul>
 		<ul class="navbar-nav ml-auto">
+			{% if not session.logged_in %}
 			<li class="nav-item">
 				<a class="nav-link" href="/register">Register </a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" href="/login">Sign in </a>
 			</li>
+			{% else %}
+			<li {% if request.path == '/profile' %}class="active"{% endif %}>
+				<a class="nav-link" href="/profile">Profile </a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/signout">Sign out </a>
+			</li>
+			{% endif %}
 		</ul>
 	</div>
 </nav>

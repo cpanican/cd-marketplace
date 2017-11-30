@@ -12,22 +12,27 @@
 
 {% block appcontent %}
 <div class="container">
-		<h1>Login</h1>
-		<form method="POST">
-			<ul class="form">
-				<li>
-			        <label>Username <span class="required">*</span></label>
-			        <input type="text" name="username" class="field-long"/>
-			    </li>
-			    <li>
-			        <label>Password <span class="required">*</span></label>
-			        <input type="password" name="password" class="field-long"/>
-			    </li>
-			    <li>
-			        <input type="submit" name="login" />
-			    </li>
-			</ul>
-		</form>
+	<h1>Login</h1>
+	<form action="/login" method="POST">
+		<ul class="form">
+			<li>
+				<label>Username <span class="required">*</span></label>
+				<input type="text" name="username" class="field-long"/>
+			</li>
+			<li>
+				<label>Password <span class="required">*</span></label>
+				<input type="password" name="password" class="field-long"/>
+			</li>
+			<li>
+				<input type="submit" name="login" value="Login" />
+			</li>
+		</ul>
+	</form>
+	{% if error %}
+	<p class="error">
+		Error: {{ error }}
+	</p>
+	{% endif %}
 </div>
 	
 
