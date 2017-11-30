@@ -15,39 +15,45 @@
 	{% if session.logged_in %}
 	<br>
 	<h1>Profile</h1>
-	<h2>Hello, Maurice Harold {{session.username}}</h2>
+	<h2>Hello, {{session.first_name}} {{session.last_name}}</h2>
+	{% if confirmed_user %}
+	<h3>You are confirmed as a {{role}}</h3>
+	{% else %}
+	<h3>You are not confirmed as a {{role}}</h3>
+	{% endif %}
 	<div class="row">
 		<div class="col col-md-5">
 			<img id="picture" src="http://i0.kym-cdn.com/photos/images/facebook/000/839/199/8a9.jpg">
 		</div>
 		<div class="col col-md-7">
-			<h2>Client Dashboard Summary</h2>
+			<h2>Your Dashboard Summary</h2>
 			<p>Current Projects: 0</p>
 			<p>Ongoing bids: 0</p>
 			<p>Completed Projects: 0</p>
-			<p>Your rating: None</p>
+			<p>Your rating: {{session.rating}}</p>
+			<p>Warnings: {{session.warning}}</p>
 			<a href="/compose" class="btn btn-primary" role="button">Post a Bid</a>
 		</div>
 	</div>
 	<br>
 
-	<div class="row">
-		<ul class="nav nav-tabs">
-			<li class="nav-item">
-				<a class="nav-link active" href="#">Active Bids</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="#">Current Projects</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="#">History</a>
-			</li>
-		</ul>
+	<div>
+		<h3>Active Bids</h3>
+		<hr>
+		<p>Notice: You don't have any ongoing bids!</p>
+		<br>
 	</div>
 	<div>
+		<h3>Current Projects</h3>
+		<hr>
+		<p>Notice: You don't have any projects!</p>
 		<br>
-		<h3>These are your current bids:</h3>
-		<p>Notice: You don't have any ongoing bids!</p>
+	</div>
+	<div>
+		<h3>History</h3>
+		<hr>
+		<p>Notice: You don't have any history!</p>
+		<br>
 	</div>
 	{% else %}
 	<h1>Please Log in</h1>

@@ -16,6 +16,14 @@
 	<form action="/register" method="POST">
 		<ul class="form">
 			<li>
+		        <label>First Name <span class="required">*</span></label>
+		        <input type="text" name="first_name" class="field-long" required/>
+		    </li>
+		    <li>
+		        <label>Last Name <span class="required">*</span></label>
+		        <input type="text" name="last_name" class="field-long" required/>
+		    </li>
+			<li>
 		        <label>Username <span class="required">*</span></label>
 		        <input type="text" name="username" class="field-long" required/>
 		    </li>
@@ -46,7 +54,7 @@
 	{% endif %}
 	{% if success %}
 	<div>
-		<h4>You successfully created an account! You will get a confirmation email after admin's approval.</h4>
+		<h4>You successfully created an account! You can now sign in.</h4>
 	</div>
 	{% elif user %}
 	<div>
