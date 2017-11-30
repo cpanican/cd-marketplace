@@ -8,7 +8,7 @@ app.secret_key = os.urandom(12)
 
 
 # connect to database
-conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace')
+conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace', autocommit=True)
 cur = conn.cursor()
 
 
@@ -51,6 +51,13 @@ def getUserIdRole(username):
 	return data
 
 
+# Insert new_user to the database
+def registerUser(username, email, password, role):
+	query = "INSERT INTO new_users (username, email, password, role) VALUES ('{}', '{}', '{}', '{}')".format(username, email, password, role)
+	cur.execute(query)
+	print("Inserted to database successfully")
+	return True
+
 # Routes
 @app.route('/')
 def home():
@@ -84,11 +91,17 @@ def register():
 		password = request.form['password']
 		conf_password = request.form['confirm-password']
 		email = request.form['email']
+		role = request.form['role']
 
-		if (not checkUser(username)) and (not checkEmail(email)):
-			return render_template("register.html", success=True)
+		if password == conf_password:
+			# If username and email are not on the database, register the user to new_users
+			if (not checkUser(username)) and (not checkEmail(email)):
+				registerUser(username, email, password, role)
+				return render_template("register.html", success=True)
+			else:
+				return render_template("register.html", user=True)
 		else:
-			return render_template("register.html", user=True)
+			return render_template("register.html", password=True)
 
 	else:
 		return render_template("register.html")

@@ -17,29 +17,36 @@
 		<ul class="form">
 			<li>
 		        <label>Username <span class="required">*</span></label>
-		        <input type="text" name="username" class="field-long"/>
+		        <input type="text" name="username" class="field-long" required/>
 		    </li>
 		    <li>
 		        <label>Password <span class="required">*</span></label>
-		        <input type="password" name="password" class="field-long"/>
+		        <input type="password" name="password" class="field-long" required/>
 		    </li>
 		    <li>
 		        <label>Confirm Password <span class="required">*</span></label>
-		        <input type="password" name="confirm-password" class="field-long"/>
+		        <input type="password" name="confirm-password" class="field-long" required/>
 		    </li>
 		    <li>
 		        <label>Email <span class="required">*</span></label>
-		        <input type="text" name="email" class="field-long"/>
+		        <input type="text" name="email" class="field-long" required/>
 		    </li>
+	    	<label><input type="radio" name="role" value="c" required> I am a client.</label>
+			<label><input type="radio" name="role" value="d" required> I am a developer.</label>
 		    <li>
 		        <input type="submit" name="Submit" />
 		    </li>
 		</ul>
 	</form>
 	<br>
+	{% if password %}
+	<div>
+		<h4>Passwords are not the same!</h4>
+	</div>
+	{% endif %}
 	{% if success %}
 	<div>
-		<h4>You successfully created an account! You will get a confirmation when you can use your account.</h4>
+		<h4>You successfully created an account! You will get a confirmation email after admin's approval.</h4>
 	</div>
 	{% elif user %}
 	<div>
