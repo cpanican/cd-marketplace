@@ -27,7 +27,7 @@ cur.execute("INSERT INTO project (status, final_price, dev_id, client_id) VALUES
 
 # New_users
 # User_id is inserted manually
-cur.execute("INSERT INTO new_users (username, role, email) VALUES ('ayylmao', 'd', 'ayylmao@gmail.com')")
+cur.execute("INSERT INTO new_users (username, role, email, password) VALUES ('ayylmao', 'd', 'ayylmao@gmail.com', '1234')")
 
 # Blacklist
 # User_id is inserted manually

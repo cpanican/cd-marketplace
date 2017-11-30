@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: cd-marketplace
 -- ------------------------------------------------------
--- Server version	5.7.18-log
+-- Server version	5.7.19-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -52,6 +52,7 @@ CREATE TABLE `new_users` (
   `username` varchar(45) NOT NULL,
   `role` char(1) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `password` varchar(32) NOT NULL,
   PRIMARY KEY (`temp_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -62,7 +63,7 @@ CREATE TABLE `new_users` (
 
 LOCK TABLES `new_users` WRITE;
 /*!40000 ALTER TABLE `new_users` DISABLE KEYS */;
-INSERT INTO `new_users` VALUES (1,'2017-11-28 18:34:23','ayylmao','d','ayylmao@gmail.com');
+INSERT INTO `new_users` VALUES (1,'2017-11-28 18:34:23','ayylmao','d','ayylmao@gmail.com','');
 /*!40000 ALTER TABLE `new_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -190,4 +191,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-11-28 13:34:47
+-- Dump completed on 2017-11-29 19:43:25
