@@ -41,6 +41,10 @@
 	<div>
 		<h4>You successfully created an account! You will get a confirmation when you can use your account.</h4>
 	</div>
+	{% elif user %}
+	<div>
+		<h4>Username/email already exists! Please try again.</h4>
+	</div>
 	{% else %}
 	{% endif %}
 </div>
