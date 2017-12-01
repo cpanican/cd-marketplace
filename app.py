@@ -33,6 +33,7 @@ def checkUser(username):
 		return False
 
 
+# TODO: Check if the email is on blacklist
 # Check if email has a duplicate. Used for registration
 def checkEmail(email):
 	query = "SELECT * FROM users WHERE email LIKE '{}'".format(email)
@@ -68,6 +69,7 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+	# TODO: Check if the email is on blacklist
 	error = None
 	if request.method == 'POST':
 		username = request.form['username']
@@ -119,13 +121,16 @@ def register():
 
 @app.route('/profile')
 def profile():
-	confirmed_user = False
 	role = 'Client'
+	# BUG
 	if session['confirmed'] != 0:
 		confirmed_user = True
+	elif session['confirmed'] == 0:
+		confirmed_user = False
 	if session['role'] == 'd':
 		role = 'Developer'
 	return render_template("profile.html", confirmed=confirmed_user, role=role)
+	# For accepted applicant, they need to be greeted to
 
 
 @app.route('/compose')
@@ -133,6 +138,7 @@ def compose():
 	return render_template("compose.html")
 
 
+# TODO: Admins login on the login page with the role of 'a'
 @app.route('/admin')
 def admin():
 	return render_template("admin.html")
@@ -157,6 +163,12 @@ def signout():
 if __name__ == "__main__":
 	app.run(debug=True)
 
+
+## BLACKLIST: unban user after 1 year.
+
+## THE DEveloper cannot post, the client can post
+
+## TOP 3 clients and developers are shown in web page
 
 	# username = session['username']
 	# user_id = session['user_id']

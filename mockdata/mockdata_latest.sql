@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: cd-marketplace
 -- ------------------------------------------------------
--- Server version	5.7.19-log
+-- Server version	5.7.18-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `blacklist`;
 CREATE TABLE `blacklist` (
   `user_id` int(11) NOT NULL,
   `reason` varchar(255) DEFAULT NULL,
+  `date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -57,7 +58,8 @@ CREATE TABLE `post` (
   `title` varchar(45) DEFAULT NULL,
   `curr_price` int(11) DEFAULT NULL,
   `clicks` int(11) DEFAULT '0',
-  `image` longblob NOT NULL,
+  `file` longblob,
+  `visibility` int(1) DEFAULT '1',
   PRIMARY KEY (`job_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -84,6 +86,7 @@ CREATE TABLE `project` (
   `final_price` int(11) DEFAULT NULL,
   `dev_id` int(11) DEFAULT NULL,
   `client_id` int(11) DEFAULT NULL,
+  `dev_rating_desc` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`job_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -117,6 +120,12 @@ CREATE TABLE `users` (
   `warning` int(11) NOT NULL DEFAULT '0',
   `description` varchar(255) DEFAULT NULL,
   `confirmed` tinyint(1) DEFAULT '0',
+  `finished_projects` int(11) NOT NULL DEFAULT '0',
+  `interest` varchar(45) DEFAULT NULL,
+  `resume` blob,
+  `image` blob,
+  `sample_work` varchar(255) DEFAULT NULL,
+  `business_credential` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -139,4 +148,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-11-30 17:06:36
+-- Dump completed on 2017-12-01 12:13:10
