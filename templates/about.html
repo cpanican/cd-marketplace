@@ -11,10 +11,21 @@
 {% endblock %}
 
 {% block appcontent %}
-<div class="container">
-	<div class="row">
-		<h1>About us</h1>
-	</div>
-</div>
+
+	<header id="aboutheader">
+		<div class = "header1">
+			<h1>About Us</h1>
+			<p id = "aboutinfo">The Developer's Marketplace is the perfect place for clients and developers to work together seamlessly. This website utilzies a bidding system, where developers bid on posted requests and clients decide the working developer. Clients have the freedom to post any implementation requests they have,and developers are allowed to bid on whichever requests they wish. This system allows for flexible pricing and collaboration between developers and clients. Professionalism is enforced through active administrators, and blacklisting offensive users.</p>
+			<p id = "register_login"> Get started today!</p>
+			<br/>
+			{% if not session.logged_in %}
+				<a href="/register"><button class="btn btn-primary btn-lg">Register</button></a>
+				<a href="/login"><button class="btn btn-primary btn-lg">Login</button></a>
+			{% else %}
+				<a href="/postings"><button class="btn btn-primary btn-lg">View All Postings</button></a>
+				<a href="/profile"><button id = "class="btn btn-primary btn-lg">My Profile</button></a>
+			{% endif %}
+		</div>
+	</header>
 
 {% endblock %}
