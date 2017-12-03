@@ -13,12 +13,12 @@
 {% block appcontent %}
 <div class="container">
 	<br>
-	<h1>Profile</h1>
-	<h2>{{first_name}} {{last_name}}</h2>
+	<h1 style="text-align: center">Profile</h1>
+	<h2 style="text-align: center">{{first_name}} {{last_name}}</h2>
 	{% if confirmed %}
-	<p>This user is confirmed as a {{role}}</p>
+	<p style="text-align: center">This user is confirmed as a {{role}}</p>
 	{% else %}
-	<p>This user is not confirmed as a {{role}}</p>
+	<p style="text-align: center">This user is not confirmed as a {{role}}</p>
 	{% endif %}
 
 	<h5>Description: {{description}}</h5>

@@ -14,12 +14,12 @@
 <div class="container">
 	{% if isValidUser %}
 	<br>
-	<h1>Dashboard</h1>
-	<h2>Hello, {{session.first_name}} {{session.last_name}}</h2>
+	<h1 style="text-align: center">Dashboard</h1>
+	<h2 style="text-align: center">Hello, {{session.first_name}} {{session.last_name}}</h2>
 	{% if confirmed %}
-	<p>You are confirmed as a {{role}}</p>
+	<p style="text-align: center">You are confirmed as a {{role}}</p>
 	{% else %}
-	<p>You are not confirmed as a {{role}}</p>
+	<p style="text-align: center">You are not confirmed as a {{role}}</p>
 	{% endif %}
 	<h5>{{session.description}}</h5>
 	<h5>Interest: {{session.interest}}</h5>
@@ -38,9 +38,9 @@
 			<p>Warnings: {{session.warning}}</p>
 			{% if client %}
 			<a href="/compose" class="btn btn-primary" role="button">Post a Bid</a>
-			<a href="/compose" class="btn btn-primary" role="button">See all Postings</a>
+			<a href="/posting" class="btn btn-primary" role="button">See all Postings</a>
 			{% else %}
-			<a href="/compose" class="btn btn-primary" role="button">See all Postings</a>
+			<a href="/posting" class="btn btn-primary" role="button">See all Postings</a>
 			{% endif %}
 		</div>
 	</div>
