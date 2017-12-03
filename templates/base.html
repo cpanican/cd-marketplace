@@ -45,8 +45,14 @@
 				<a class="nav-link" href="/login">Sign in </a>
 			</li>
 			{% else %}
+			<li {% if request.path == '/edit-profile' %}class="active"{% endif %}>
+				<a class="nav-link" href="/edit-profile">Edit Profile </a>
+			</li>
+			<li {% if request.path == '/dashboard' %}class="active"{% endif %}>
+				<a class="nav-link" href="/dashboard">Dashboard </a>
+			</li>
 			<li {% if request.path == '/profile' %}class="active"{% endif %}>
-				<a class="nav-link" href="/profile">Profile </a>
+				<a class="nav-link" href="/profile">My Profile </a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" href="/signout">Sign out </a>

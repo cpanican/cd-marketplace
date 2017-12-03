@@ -46,7 +46,7 @@ def checkEmail(email):
 
 # Returns the userid and role of current user. Returns a tuple ex: (1, d)
 def getUser(username):
-	query = "SELECT user_id, email, role, first_name, last_name, rating, warning, description, confirmed, finished_projects FROM users WHERE username LIKE '{}'".format(username)
+	query = "SELECT user_id, email, role, first_name, last_name, rating, warning, description, confirmed, finished_projects, interest, sample_work, business_credential, balance FROM users WHERE username LIKE '{}'".format(username)
 	cur.execute(query)
 	data = cur.fetchone()
 	return data
@@ -85,6 +85,32 @@ def postBid(title, description, start_price, deadline, file, visibility, user_id
 	print("Inserted to post database successfully")
 	return True
 
+
+def editProfile(user_id, description, interest, resume, sample_work, business_credential):
+	if description:
+		query = "UPDATE users SET description = '{}' WHERE user_id = {}".format(description, user_id)
+		print(query)
+		cur.execute(query)
+	if interest:
+		query = "UPDATE users SET interest = '{}' WHERE user_id = {}".format(interest, user_id)
+		print(query)
+		cur.execute(query)
+	if resume:
+		query = "UPDATE users SET resume = '{}' WHERE user_id = {}".format(resume, user_id)
+		print(query)
+		cur.execute(query)
+	if sample_work:
+		query = "UPDATE users SET sample_work = '{}' WHERE user_id = {}".format(sample_work, user_id)
+		print(query)
+		cur.execute(query)
+	if business_credential:
+		query = "UPDATE users SET business_credential = '{}' WHERE user_id = {}".format(business_credential, user_id)
+		print(query)
+		cur.execute(query)
+	print("Updated users database successfully")
+	return True
+
+
 # Routes
 @app.route('/')
 def home():
@@ -112,10 +138,14 @@ def login():
 			session['description'] = getUser(username)[7]
 			session['confirmed'] = getUser(username)[8]
 			session['finished_projects'] = getUser(username)[9]
+			session['interest'] = getUser(username)[10]
+			session['sample_work'] = getUser(username)[11]
+			session['business_credential'] = getUser(username)[12]
+			session['balance'] = getUser(username)[13]
 			session['logged_in'] = True
 			getBlacklist(username)
 			if session['role'] != 'a':
-				return redirect(url_for('profile'))
+				return redirect(url_for('profile', username=session['username']))
 			else:
 				return redirect(url_for('admin'))
 		else:
@@ -149,8 +179,9 @@ def register():
 		return render_template("register.html")
 
 
-@app.route('/profile')
-def profile():
+@app.route('/dashboard')
+def dashboard():
+	isValidUser = True
 	role = 'Client'
 	if session['role'] == 'd':
 		role = 'Developer'
@@ -161,9 +192,46 @@ def profile():
 		confirmed_user = False
 
 	print(confirmed_user)
-	return render_template("profile.html", confirmed=confirmed_user, role=role)
+	if role == 'Client':
+		return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, client=True)
+	if role == 'Developer':
+		return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, developer=True)
+
+
+@app.route('/profile')
+def profile_redirect():
+	print("Profile Redirect")
+	return redirect(url_for('profile', username=session['username']))
+
+
+@app.route('/profile/<username>', methods=['GET'])
+def profile(username):
+	email = getUser(username)[1]
+	role = getUser(username)[2]
+	first_name = getUser(username)[3]
+	last_name = getUser(username)[4]
+	rating = getUser(username)[5]
+	warning = getUser(username)[6]
+	description = getUser(username)[7]
+	confirmed = getUser(username)[8]
+	finished_projects = getUser(username)[9]
+	interest = getUser(username)[10]
+	sample_work = getUser(username)[11]
+	business_credential = getUser(username)[12]
+	if confirmed != 0:
+		confirmed_user = True
+	elif confirmed == 0:
+		confirmed_user = False
+
+	if role == 'd':
+		role = 'Developer'
+	else:
+		role = 'Client'
+
+	return render_template("profile.html", email=email, role=role, first_name=first_name, last_name=last_name, rating=rating, warning=warning, description=description, confirmed=confirmed_user, finished_projects=finished_projects, interest=interest, sample_work=sample_work, business_credential=business_credential)
 	# For accepted applicant, they need to be greeted to a edit resume page etc.
-	# Blacklist user should show when they were banned reason and how many days left
+	# Blacklist user should show when they were banned reason and how many days left:
+
 
 
 @app.route('/compose', methods=['GET','POST'])
@@ -210,9 +278,29 @@ def about():
 	return render_template("about.html")
 
 
+# postings/project-name
 @app.route('/postings')
 def postings():
 	return render_template("postings.html")
+
+
+@app.route('/edit-profile' , methods=['GET','POST'])
+def edit_profile():
+	print("edit-profile Page")
+	error = None
+	if request.method == 'POST':
+		description = request.form['description']
+		interest = request.form['interest']
+		resume = request.form['resume']
+		sample_work = request.form['sample_work']
+		business_credential = request.form['business_credential']
+		description = description.replace("'", "''")
+		interest = interest.replace("'", "''")
+		sample_work = sample_work.replace("'", "''")
+		business_credential = business_credential.replace("'", "''")
+		user_id = session['user_id']
+		editProfile(user_id, description, interest, resume, sample_work, business_credential)
+	return render_template("edit-profile.html")
 
 
 @app.route('/signout')

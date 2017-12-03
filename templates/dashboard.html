@@ -12,30 +12,36 @@
 
 {% block appcontent %}
 <div class="container">
+	{% if isValidUser %}
 	<br>
-	<h1>Profile</h1>
-	<h2>{{first_name}} {{last_name}}</h2>
+	<h1>Dashboard</h1>
+	<h2>Hello, {{session.first_name}} {{session.last_name}}</h2>
 	{% if confirmed %}
-	<p>This user is confirmed as a {{role}}</p>
+	<p>You are confirmed as a {{role}}</p>
 	{% else %}
-	<p>This user is not confirmed as a {{role}}</p>
+	<p>You are not confirmed as a {{role}}</p>
 	{% endif %}
+	<h5>{{session.description}}</h5>
+	<h5>Interest: {{session.interest}}</h5>
+	<h5>Sample Work: {{session.sample_work}}</h5>
 
-	<h5>{{description}}</h5>
-	<h5>Interest: {{interest}}</h5>
-	<h5>Sample Work: {{sample_work}}</h5>
-	
 	<div class="row">
 		<div class="col col-md-5">
 			<img id="picture" src="http://i0.kym-cdn.com/photos/images/facebook/000/839/199/8a9.jpg">
 		</div>
 		<div class="col col-md-7">
-			<h2>User Summary</h2>
+			<h2>Your Dashboard Summary</h2>
 			<p>Current Projects: 0</p>
 			<p>Ongoing bids: 0</p>
 			<p>Completed Projects: 0</p>
-			<p>Rating: {{rating}}</p>
-			<p>Warnings: {{warning}}</p>
+			<p>Your rating: {{session.rating}}</p>
+			<p>Warnings: {{session.warning}}</p>
+			{% if client %}
+			<a href="/compose" class="btn btn-primary" role="button">Post a Bid</a>
+			<a href="/compose" class="btn btn-primary" role="button">See all Postings</a>
+			{% else %}
+			<a href="/compose" class="btn btn-primary" role="button">See all Postings</a>
+			{% endif %}
 		</div>
 	</div>
 	<br>
@@ -43,21 +49,26 @@
 	<div>
 		<h3>Active Bids</h3>
 		<hr>
-		<p>Notice: This user doesn't have any ongoing bids!</p>
+		<p>Notice: You don't have any ongoing bids!</p>
 		<br>
 	</div>
 	<div>
 		<h3>Current Projects</h3>
 		<hr>
-		<p>Notice: This user doesn't  have any projects!</p>
+		<p>Notice: You don't have any projects!</p>
 		<br>
 	</div>
 	<div>
 		<h3>History</h3>
 		<hr>
-		<p>Notice: This user doesn't  have any history!</p>
+		<p>Notice: You don't have any history!</p>
 		<br>
 	</div>
+
+
+	{% else %}
+	<h1>Please Login</h1>
+	{% endif %}
 </div>
 
 {% endblock %}

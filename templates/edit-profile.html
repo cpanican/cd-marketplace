@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block styles %}
+	{{ super () }}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/compose.css') }}" />
+{% endblock %}
+
+{% block scripts %}
+	{{ super() }}
+	<script type="text/javascript" src="{{ url_for('static', filename='scripts/compose.js') }}"></script>
+{% endblock %}
+
+{% block appcontent %}
+<div class="container">
+	<div class="row">
+		<h1>Edit profile</h1>
+		<div class="container">
+		<p>Congratulations for being verified! You can now add more information in your profile</p>
+		<br>
+		  <form action="/edit-profile" method="POST">
+		    <div class="form-group row">
+		      <label for="inputTitle3" class="col-sm-2 col-form-label">Description</label>
+		      <div class="col-sm-10">
+		        <input type="text" class="form-control" name="description" placeholder="Description" >
+		      </div>
+		    </div>
+		    <div class="form-group row">
+		      <label for="inputDescription3" class="col-sm-2 col-form-label">Interest</label>
+		      <div class="col-sm-10">
+		        <input type="text" class="form-control" name="interest" placeholder="Example: Web Design, Machine Learning" >
+		      </div>
+		    </div>
+		    <div class="form-group row">
+		      <label for="inputFile3" class="col-sm-2 col-form-label">Resume</label>
+		      <div class="col-sm-10">
+		        <input type="file" class="form-control" name="resume" placeholder="Resume">
+		      </div>
+		    </div>
+		    <div class="form-group row">
+		      <label for="inputFile3" class="col-sm-2 col-form-label">Sample Work</label>
+		      <div class="col-sm-10">
+		        <input type="text" class="form-control" name="sample_work" placeholder="Sample Work: include a website of your work">
+		      </div>
+		    </div>
+		    <div class="form-group row">
+		      <label for="inputFile3" class="col-sm-2 col-form-label">Business Credential</label>
+		      <div class="col-sm-10">
+		        <input type="text" class="form-control" name="business_credential" placeholder="Business Credential">
+		      </div>
+		    </div>
+		    <div class="form-group row">
+		      <div class="offset-sm-5 col-sm-7">
+		        <button type="submit" class="btn btn-primary">Submit</button>
+		      </div>
+		    </div>
+		  </form>
+		</div>
+		{% if error %}
+		<h3>An error occurred. Please try again</h3>
+		{% else %}
+		{% endif %}
+	</div>
+</div>
+
+{% endblock %}
