@@ -18,42 +18,21 @@
 	<div class="row">
 		<div class="container">
 			<div class="row text-center">
+				{% for post in posts %}
 				<div class="col col-md-4">
 					<div id="card-padding" class="card">
 						<div class="card-block">
-							<h3 class="card-title">New Database for Website</h3>
-							<p class="card-text">I need a database for my website. Attached file has more description of the project</p>
-							<p>Starting bid: $30</p>
-							<p>Deadline: 11/24/2017</p>
-							<p>Created by: Maurice Harold</p>
-							<a href="#" class="btn btn-primary">View Posting</a>
+							<a href="/posting/{{ post[0] }}" style="color:black"><h4 class="card-title">{{ post[7] }}</h4></a>
+							<p>Client bid: ${{ post[2] }}</p>
+							<p>Number of bids: {{ post[15] }}</p>
+							<p>Views: {{ post[16] }}</p>
+							<p>Deadline: {{ post[3] }}</p>
+							<p>Created by: <a href="/profile/{{ post[12] }}">{{ post[13] }} {{ post[14] }}</a></p>
+							<a href="/posting/{{ post[0] }}" class="btn btn-primary">View Posting</a>
 						</div>
 					</div>
 				</div>
-				<div class="col col-md-4">
-					<div id="card-padding" class="card">
-						<div class="card-block">
-							<h3 class="card-title">Help with BASIC development</h3>
-							<p class="card-text">My project needs a BASIC compoenent and I don't have much knowledge with BASIC.</p>
-							<p>Starting bid: $20</p>
-							<p>Deadline: 12/01/2017</p>
-							<p>Created by: Jim Hopper</p>
-							<a href="#" class="btn btn-primary">View Posting</a>
-						</div>
-					</div>
-				</div>
-				<div class="col col-md-4">
-					<div id="card-padding" class="card">
-						<div class="card-block">
-							<h3 class="card-title">Homework Problem HELP!!!</h3>
-							<p class="card-text">Please help me with my Algorithms Homework</p>
-							<p>Starting bid: $5</p>
-							<p>Deadline: 11/30/2017</p>
-							<p>Created by: Anonymous User</p>
-							<a href="#" class="btn btn-primary">View Posting</a>
-						</div>
-					</div>
-				</div>
+				{% endfor %}
 			</div>
 		</div>
 	</div>

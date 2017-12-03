@@ -52,6 +52,12 @@ def getUser(username):
 	return data
 
 
+def getUserById(user_id):
+	query = "SELECT * FROM users WHERE user_id = {}".format(user_id)
+	cur.execute(query)
+	data = cur.fetchone()
+	return data
+
 # Return True if user in blacklist
 def getBlacklist(username):
 	query = "SELECT reason, date FROM blacklist JOIN users ON blacklist.user_id = users.user_id WHERE username LIKE '{}'".format(username)
@@ -75,7 +81,7 @@ def registerUser(username, email, password, role, first_name, last_name):
 
 # # Post a bid and write it on the database
 def postBid(title, description, start_price, deadline, file, visibility, user_id):
-	query = "INSERT INTO post (title, description, start_price, file, visibility, client_id, curr_price, project_days) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(title, description, start_price, file, visibility, user_id, start_price, deadline)
+	query = "INSERT INTO post (title, proj_description, start_price, file, visibility, client_id, curr_price, project_days) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(title, description, start_price, file, visibility, user_id, start_price, deadline)
 	print(query)
 	cur.execute(query)
 	print(type(deadline))
@@ -111,11 +117,97 @@ def editProfile(user_id, description, interest, resume, sample_work, business_cr
 	return True
 
 
+# Show all posts newest first on postings page
+def showPosts():
+	query = "SELECT job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id ORDER BY post_date DESC"
+	cur.execute(query)
+	data = cur.fetchall()
+	return data
+
+
+# Show one specific post
+def showOnePost(job_id):
+	query = "SELECT job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id WHERE job_id = {}".format(job_id)
+	cur.execute(query)
+	data = cur.fetchone()
+	return data
+
+
+# Show developer bidders on specific project
+def showPostBids(job_id):
+	query = "SELECT job_id, dev_id, price, date, username, first_name, last_name FROM bids JOIN users ON bids.dev_id = users.user_id WHERE job_id = {} ORDER BY date DESC".format(job_id)
+	cur.execute(query)
+	data = cur.fetchall()
+	return data
+
+
+def appendClicks(job_id):
+	# Append clicks
+	query = "UPDATE post SET clicks = clicks + 1 WHERE job_id = {}".format(job_id)
+	cur.execute(query)
+	print("Click appended")
+	return True
+
+
+def newBid(job_id, dev_id, price):
+	query = "INSERT INTO bids (job_id, dev_id, price) VALUES ({}, {}, {})".format(job_id, dev_id, price)
+	cur.execute(query)
+	print("Bid updated")
+	return True
+
+
+def incrementBid(job_id):
+	query = "UPDATE post SET bids = bids + 1 WHERE job_id = {}".format(job_id)
+	cur.execute(query)
+	print("Bids appended")
+	return True
+
+
+def top3Bids():
+	query = "SELECT * from post ORDER BY clicks DESC LIMIT 3"
+	cur.execute(query)
+	data = cur.fetchall()
+	print("Top 3 bids loaded")
+	print(data)
+	return data
+
+def top3Devs():
+	query = "SELECT * from users WHERE role = 'd' AND confirmed = 1 ORDER BY rating DESC LIMIT 3"
+	cur.execute(query)
+	data = cur.fetchall()
+	print("Top 3 developers loaded")
+	print(data)
+	return data
+
+
+def top3Clients():
+	query = "SELECT * from users WHERE role = 'c' AND confirmed = 1 ORDER BY rating DESC LIMIT 3"
+	cur.execute(query)
+	data = cur.fetchall()
+	print("Top 3 clients loaded")
+	print(data)
+	return data
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Routes
 @app.route('/')
 def home():
 	print("Home page")
-	return render_template("home.html")
+	bids = top3Bids()
+	devs = top3Devs()
+	clients = top3Clients()
+	return render_template("home.html", bids=bids, devs=devs, clients=clients)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -145,7 +237,7 @@ def login():
 			session['logged_in'] = True
 			getBlacklist(username)
 			if session['role'] != 'a':
-				return redirect(url_for('profile', username=session['username']))
+				return redirect(url_for('dashboard'))
 			else:
 				return redirect(url_for('admin'))
 		else:
@@ -279,9 +371,30 @@ def about():
 
 
 # postings/project-name
-@app.route('/postings')
+@app.route('/posting')
 def postings():
-	return render_template("postings.html")
+	posts = showPosts()
+	#job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, curr_price, file, visibility, project_days, email, username, first_name, last_name, bids
+	return render_template("postings.html", posts=posts)
+
+
+@app.route('/posting/<job_id>', methods=['GET', 'POST'])
+def post(job_id):
+	post = showOnePost(job_id)
+	bids = showPostBids(job_id)
+	appendClicks(job_id)
+	if request.method == 'POST':
+		if session['role'] == 'c':
+			return render_template("post.html", post=post, bids=bids, client=True)
+		else:
+			price = request.form['bid']
+			dev_id = session['user_id']
+			newBid(job_id, dev_id, price)
+			incrementBid(job_id)
+			bids = showPostBids(job_id)
+			return render_template("post.html", post=post, bids=bids, success=True)
+	else:
+		return render_template("post.html", post=post, bids=bids)
 
 
 @app.route('/edit-profile' , methods=['GET','POST'])

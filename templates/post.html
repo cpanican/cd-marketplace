@@ -12,7 +12,50 @@
 
 {% block appcontent %}
 <div class="container">
-	<h1>Project</h1>
+	<h1>Project Information</h1>
+	<h2>Title: {{ post[7] }}</h2>
+	<h3>Author: <a href="/profile/{{ post[12] }}">{{ post[13] }} {{ post[14] }}</h3></a>
+	<h4>Description</h4>
+	<p>{{ post[1] }}</p>
+	<h5>Project Days: {{ post[10] }} days</h5>
+	<h5>Bids: {{ post[15] }}</h5>
+	<h5>Client Price: ${{ post[2] }}</h5>
+	<h5>Bidding ends at {{ post[3] }}</h5>
+	<hr>
+	<div class="row">
+		<div class="col-sm-4">
+			{% if session.logged_in %}
+				{% if client %}
+				<h4>Submit a new offer</h4>
+				<p>You need to become a developer to submit an offer.</p>
+				{% else %}
+				<h4>Submit a new offer</h4>
+				<p>Offer a price to the client</p>
+				<form action="/posting/{{ post[0] }}" method="POST">
+					<input type="number" name="bid" required/>
+					<input type="submit" class="btn btn-primary" name="Bid">
+				</form>
+				{% if success %}
+				<p>Successfully posted a new bid!</p>
+				{% endif %}
+				{% endif %}		
+			{% else %}
+			<h4>Submit a new offer</h4>
+			<p>You need to become a developer to submit an offer.</p>
+			{% endif %}
+
+		</div>
+		<div class="col-sm-8">
+			<h4>Current Bidders</h4>
+			{% for bid in bids %}
+			<div class="card">
+				<p>Name: <a href="/profile/{{ bid[4] }}">{{ bid[5] }} {{ bid[6] }}</a></p>
+				<p>Price: ${{ bid[2] }}</p>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+	
 </div>
 
 {% endblock %}

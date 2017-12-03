@@ -23,7 +23,7 @@
 			{% if not session.logged_in %}
 			<a href="/register"><button class="btn btn-outline-success btn-lg">Get Started</button></a>
 			{% else %}
-			<a href="/postings"><button class="btn btn-outline-success btn-lg">View All Postings</button></a>
+			<a href="/posting"><button class="btn btn-outline-success btn-lg">View All Postings</button></a>
 			<a href="/profile"><button class="btn btn-outline-success btn-lg">My Profile</button></a>
 			{% endif %}
 		</div>
@@ -55,8 +55,12 @@
 				<h1>Are you a client or developer?</h1>
 				<p>Clients can post while developers can bid on things.</p>
 				<br />
+				{% if session.logged_in %}
+				<a href="/dashboard" class="btn btn-primary btn-lg">My Dashboard</a>
+				{% else %}
 				<a href="/register" class="btn btn-primary btn-lg">Client</a>
 				<a href="/register" class="btn btn-primary btn-lg">Developer</a>
+				{% endif %}
 			</div>
 		</div>
 	</div>
@@ -65,112 +69,59 @@
 		<h1 class="text-center">Trending bids</h1>
 		<p class="text-center">These are the current trending bids.</p>
 		<div class="row text-center">
+			{% for bid in bids %}
 			<div class="col col-md-4">
 				<div class="card">
 					<div class="card-block">
-						<h1 class="card-title">Sample Bid</h1>
-						<p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-						<a href="#" class="btn btn-primary">Go here</a>
+						<h3 class="card-title">{{ bid[7] }}</h3>
+						<p class="card-text">Start Price: ${{ bid[2] }}</p>
+						<a href="/posting/{{ bid[0] }}" class="btn btn-primary">Visit Posting</a>
 					</div>
 				</div>
 			</div>
-			<div class="col col-md-4">
-				<div class="card">
-					<div class="card-block">
-						<h1 class="card-title">Sample Bid</h1>
-						<p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-						<a href="#" class="btn btn-primary">Go here</a>
-					</div>
-				</div>
-			</div>
-			<div class="col col-md-4">
-				<div class="card">
-					<div class="card-block">
-						<h1 class="card-title">Sample Bid</h1>
-						<p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-						<a href="#" class="btn btn-primary">Go here</a>
-					</div>
-				</div>
-			</div>
+			{% endfor %}
 		</div>
+		<br>
 		<div class="text-center">
-			<a href="#" class="btn btn-primary">View All Bids</a>
-		</div>
-		<hr>
-	</div>
-
-	<div id="trending-section" class="container">
-		<h1 class="text-center">Top 3 Developers</h1>
-		<p class="text-center">These are the most active developers with the most projects completed.</p>
-		<div class="row text-center">
-			<div class="col col-md-4">
-				<div class="card">
-					<div class="card-block">
-						<h1 class="card-title">Client Name</h1>
-						<p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-						<a href="#" class="btn btn-primary">Go here</a>
-					</div>
-				</div>
-			</div>
-			<div class="col col-md-4">
-				<div class="card">
-					<div class="card-block">
-						<h1 class="card-title">Client Name</h1>
-						<p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-						<a href="#" class="btn btn-primary">Go here</a>
-					</div>
-				</div>
-			</div>
-			<div class="col col-md-4">
-				<div class="card">
-					<div class="card-block">
-						<h1 class="card-title">Client Name</h1>
-						<p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-						<a href="#" class="btn btn-primary">Go here</a>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="text-center">
-			<a href="#" class="btn btn-primary">View All Bids</a>
+			<a href="/posting" class="btn btn-primary">View All Bids</a>
 		</div>
 		<hr>
 	</div>
 
 	<div id="trending-section" class="container">
 		<h1 class="text-center">Top 3 Clients</h1>
-		<p class="text-center">These are the most active clients with the most posts</p>
+		<p class="text-center">These are the most high rated clients with the most posts completed.</p>
 		<div class="row text-center">
+			{% for client in clients %}
 			<div class="col col-md-4">
 				<div class="card">
 					<div class="card-block">
-						<h1 class="card-title">Developer Name</h1>
-						<p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-						<a href="#" class="btn btn-primary">Go here</a>
+						<h3 class="card-title">{{ client[6] }} {{ client[7] }}</h3>
+						<p class="card-text">Description: {{ client[10] }}</p>
+						<a href="/profile/{{ client[4] }}" class="btn btn-primary">Visit Profile</a>
 					</div>
 				</div>
 			</div>
-			<div class="col col-md-4">
-				<div class="card">
-					<div class="card-block">
-						<h1 class="card-title">Developer Name</h1>
-						<p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-						<a href="#" class="btn btn-primary">Go here</a>
-					</div>
-				</div>
-			</div>
-			<div class="col col-md-4">
-				<div class="card">
-					<div class="card-block">
-						<h1 class="card-title">Developer Name</h1>
-						<p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-						<a href="#" class="btn btn-primary">Go here</a>
-					</div>
-				</div>
-			</div>
+			{% endfor %}
 		</div>
-		<div class="text-center">
-			<a href="#" class="btn btn-primary">View All Bids</a>
+		<hr>
+	</div>
+
+	<div id="trending-section" class="container">
+		<h1 class="text-center">Top 3 Developers</h1>
+		<p class="text-center">These are the most high rated developers with the most projects completed</p>
+		<div class="row text-center">
+			{% for dev in devs %}
+			<div class="col col-md-4">
+				<div class="card">
+					<div class="card-block">
+						<h3 class="card-title">{{ dev[6] }} {{ dev[7] }}</h3>
+						<p class="card-text">Description: {{ dev[10] }}</p>
+						<a href="/profile/{{ dev[4] }}" class="btn btn-primary">Visit Profile</a>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
 		</div>
 		<hr>
 	</div>

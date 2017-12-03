@@ -32,8 +32,8 @@
 			<li {% if request.path == '/about' %}class="active"{% endif %}>
 				<a class="nav-link" href="/about">About </a>
 			</li>
-			<li {% if request.path == '/postings' %}class="active"{% endif %}>
-				<a class="nav-link" href="/postings">All Postings </a>
+			<li {% if request.path == '/posting' %}class="active"{% endif %}>
+				<a class="nav-link" href="/posting">All Postings </a>
 			</li>
 		</ul>
 		<ul class="navbar-nav ml-auto">
@@ -69,11 +69,11 @@
 	{% block appcontent %}{% endblock %}
 </div>
 {% endblock %}
-
+<!-- 
 <footer>
 	<div id="footer-bg">
 		<h1>Footer</h1>
 	</div>
-</footer>
+</footer> -->
 
 </html>
