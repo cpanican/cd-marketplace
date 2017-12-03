@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: cd-marketplace
 -- ------------------------------------------------------
--- Server version	5.7.19-log
+-- Server version	5.7.18-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -50,8 +50,9 @@ CREATE TABLE `post` (
   `job_id` int(11) NOT NULL AUTO_INCREMENT,
   `description` varchar(255) DEFAULT NULL,
   `start_price` int(11) DEFAULT NULL,
-  `deadline` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `deadline` timestamp NULL DEFAULT NULL,
   `post_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `bidding_time` int(11) DEFAULT NULL,
   `dev_id` int(11) DEFAULT NULL,
   `client_id` int(11) DEFAULT NULL,
   `title` varchar(45) DEFAULT NULL,
@@ -59,9 +60,8 @@ CREATE TABLE `post` (
   `clicks` int(11) DEFAULT '0',
   `file` longblob,
   `visibility` int(1) DEFAULT '1',
-  `project_days` int(2) DEFAULT '3',
   PRIMARY KEY (`job_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +70,6 @@ CREATE TABLE `post` (
 
 LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
-INSERT INTO `post` VALUES (1,'Hello Developers! Please help me with the design of my startup company\'s database! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec in lacinia eros. Vestibulum efficitur ipsum massa. Fusce ultricies urna sit amet velit bibendum mollis.',40,'2017-12-24 05:01:17','2017-12-03 05:01:17',NULL,2,'Help with database design of startup company',40,0,'',1,5),(2,'Hi! My new startup company needs a landing page! Please help me design it. Aliquam condimentum a quam sed tincidunt. Nunc pharetra, neque varius vulputate semper, odio lectus sagittis risus, eu cursus elit urna ut est. ',30,'2017-12-17 05:05:24','2017-12-03 05:05:24',NULL,2,'Startup Company New Landing Page',30,0,'shiba.txt',1,15),(3,'Hello! I am a bitcoin enthusiast and I would like someone to make me a program to mine bitcoins! Paying a LOT of cash!',100,'2017-12-10 05:07:34','2017-12-03 05:07:34',NULL,5,'Mining bitcoin software',100,0,'shiba.txt',1,30);
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -127,9 +126,8 @@ CREATE TABLE `users` (
   `image` blob,
   `sample_work` varchar(255) DEFAULT NULL,
   `business_credential` varchar(255) DEFAULT NULL,
-  `balance` int(11) DEFAULT '0',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +136,6 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'chrispanican@gmail.com','webapp123','2017-12-03 04:08:33','chris1800','d','Chris','Panican',0,0,NULL,1,0,NULL,NULL,NULL,NULL,NULL,0),(2,'haroldfalk@aol.com','webapp123','2017-12-03 04:08:47','haroldfalk','c','Harold','Falk',0,0,NULL,1,0,NULL,NULL,NULL,NULL,NULL,0),(3,'peterparker123@email.com','webapp123','2017-12-03 04:09:12','peterparker','d','Peter','Parker',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(4,'stevejobs@apple.com','webapp123','2017-12-03 04:09:33','stevejobs','d','Steve','Jobs',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(5,'bitcoin@email.com','webapp123','2017-12-03 04:10:32','bitcoin','c','Bitcoin','MineGuy',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(6,'ayylmao@meme.com','webapp123','2017-12-03 04:10:45','ayylmao','c','Ayy','Lmao',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(7,'luigimario','webapp123','2017-12-03 04:11:25','luigimario','c','Luigi','Mario',0,0,NULL,1,0,NULL,NULL,NULL,NULL,NULL,0),(8,'chrispanican','webapp123','2017-12-03 04:25:21','chris','a','Chris','Panican',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -151,4 +148,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-03  0:11:43
+-- Dump completed on 2017-12-01 12:13:10
