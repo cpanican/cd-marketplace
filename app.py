@@ -46,19 +46,44 @@ def checkEmail(email):
 
 # Returns the userid and role of current user. Returns a tuple ex: (1, d)
 def getUser(username):
-	query = "SELECT user_id, email, role, first_name, last_name, rating, warning, description, confirmed FROM users WHERE username LIKE '{}'".format(username)
+	query = "SELECT user_id, email, role, first_name, last_name, rating, warning, description, confirmed, finished_projects FROM users WHERE username LIKE '{}'".format(username)
 	cur.execute(query)
 	data = cur.fetchone()
 	return data
+
+
+# Return True if user in blacklist
+def getBlacklist(username):
+	query = "SELECT reason, date FROM blacklist JOIN users ON blacklist.user_id = users.user_id WHERE username LIKE '{}'".format(username)
+	if cur.execute(query):
+		data = cur.fetchone()
+		print(data)
+		print("user is in the blacklist")
+		return data
+	else:
+		print("user is not in the blacklist")
+		return
 
 
 # Insert new_user to the database
 def registerUser(username, email, password, role, first_name, last_name):
 	query = "INSERT INTO users (username, email, password, role, first_name, last_name) VALUES ('{}', '{}', '{}', '{}', '{}', '{}')".format(username, email, password, role, first_name, last_name)
 	cur.execute(query)
-	print("Inserted to database successfully")
+	print("Inserted to users database successfully")
 	return True
 
+
+# # Post a bid and write it on the database
+def postBid(title, description, start_price, deadline, file, visibility, user_id):
+	query = "INSERT INTO post (title, description, start_price, file, visibility, client_id, curr_price, project_days) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(title, description, start_price, file, visibility, user_id, start_price, deadline)
+	print(query)
+	cur.execute(query)
+	print(type(deadline))
+	query2 = "UPDATE post SET deadline = DATE_ADD(deadline, INTERVAL 7 DAY)"
+	print(query2)
+	cur.execute(query2)
+	print("Inserted to post database successfully")
+	return True
 
 # Routes
 @app.route('/')
@@ -69,6 +94,7 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+	print("Login Page")
 	# TODO: Check if the email is on blacklist
 	error = None
 	if request.method == 'POST':
@@ -85,8 +111,13 @@ def login():
 			session['warning'] = getUser(username)[6]
 			session['description'] = getUser(username)[7]
 			session['confirmed'] = getUser(username)[8]
+			session['finished_projects'] = getUser(username)[9]
 			session['logged_in'] = True
-			return redirect(url_for('home'))
+			getBlacklist(username)
+			if session['role'] != 'a':
+				return redirect(url_for('profile'))
+			else:
+				return redirect(url_for('admin'))
 		else:
 			error = True
 			return render_template("login.html", error=error)
@@ -106,7 +137,6 @@ def register():
 		role = request.form['role']
 
 		if password == conf_password:
-			# If username and email are not on the database, register the user to new_users
 			if (not checkUser(username)) and (not checkEmail(email)):
 				registerUser(username, email, password, role, first_name, last_name)
 				return render_template("register.html", success=True)
@@ -122,25 +152,56 @@ def register():
 @app.route('/profile')
 def profile():
 	role = 'Client'
-	# BUG
+	if session['role'] == 'd':
+		role = 'Developer'
+	print(session['confirmed'])
 	if session['confirmed'] != 0:
 		confirmed_user = True
 	elif session['confirmed'] == 0:
 		confirmed_user = False
-	if session['role'] == 'd':
-		role = 'Developer'
+
+	print(confirmed_user)
 	return render_template("profile.html", confirmed=confirmed_user, role=role)
-	# For accepted applicant, they need to be greeted to
+	# For accepted applicant, they need to be greeted to a edit resume page etc.
+	# Blacklist user should show when they were banned reason and how many days left
 
 
-@app.route('/compose')
+@app.route('/compose', methods=['GET','POST'])
 def compose():
-	return render_template("compose.html")
+	print("Compose Page")
+	error = None
+	if request.method == 'POST':
+		title = request.form['title']
+		description = request.form['description']
+		start_price = request.form['start_price']
+		deadline = request.form['deadline']
+		file = request.form['file']
+		visibility = int(request.form['visibility'])
+		user_id = session['user_id']
+		description = description.replace("'", "''")
+		title = title.replace("'", "''")
+		print(type(description))
+		print(type(file))
+		print(title)
+		print(description)
+		print(start_price)
+		print(deadline)
+		print(file)
+		print(visibility)
+		print(user_id)
+		if postBid(title, description, start_price, deadline, file, visibility, user_id):
+			return render_template("post.html")
+		else:
+			error = True
+			return render_template("compose.html", error=error)
+	else:
+		return render_template("compose.html")
 
 
 # TODO: Admins login on the login page with the role of 'a'
 @app.route('/admin')
 def admin():
+	# Check if user is in blacklist
 	return render_template("admin.html")
 
 

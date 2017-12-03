@@ -16,7 +16,7 @@
 	<br>
 	<h1>Profile</h1>
 	<h2>Hello, {{session.first_name}} {{session.last_name}}</h2>
-	{% if confirmed_user %}
+	{% if confirmed %}
 	<h3>You are confirmed as a {{role}}</h3>
 	{% else %}
 	<h3>You are not confirmed as a {{role}}</h3>

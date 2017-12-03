@@ -15,71 +15,92 @@
 	<div class="row">
 		<h1>Submit a post</h1>
 		<div class="container">
-		  <form>
+		<p>All bids will end in 7 days unless the client chooses a developer.</p>
+		<p>If the client hasn't chosen a developer, highest bidder will recieve the project.</p>
+		<p>Expired posts without any bidders will have a $10 charge.</p>
+		<br>
+		  <form action="/compose" method="POST">
 		    <div class="form-group row">
 		      <label for="inputTitle3" class="col-sm-2 col-form-label">Title</label>
 		      <div class="col-sm-10">
-		        <input type="text" class="form-control" id="inputTitle3" placeholder="Title">
+		        <input type="text" class="form-control" name="title" placeholder="Title" required>
 		      </div>
 		    </div>
 		    <div class="form-group row">
 		      <label for="inputDescription3" class="col-sm-2 col-form-label">Description</label>
 		      <div class="col-sm-10">
-		        <input type="text" class="form-control" id="inputDescription3" placeholder="Description">
+		        <input type="text" class="form-control" name="description" placeholder="Description" required>
 		      </div>
 		    </div>
 		    <div class="form-group row">
-		      <label for="inputBid3" class="col-sm-2 col-form-label">Starting Bid</label>
+		      <label for="inputBid3" class="col-sm-2 col-form-label">Start Price</label>
 		      <div class="col-sm-10">
-		        <input type="text" class="form-control" id="inputBid3" placeholder="Starting Bid">
-		      </div>
-		    </div>
-		    <div class="form-group row">
-		      <label for="inputDeadline3" class="col-sm-2 col-form-label">Deadline</label>
-		      <div class="col-sm-10">
-		        <input type="date" class="form-control" id="inputDeadline3" placeholder="Deadline">
+		        <input type="text" class="form-control" name="start_price" placeholder="Starting Bid" required>
 		      </div>
 		    </div>
 		    <div class="form-group row">
 		      <label for="inputFile3" class="col-sm-2 col-form-label">Upload Files</label>
 		      <div class="col-sm-10">
-		        <input type="file" class="form-control" id="inputFile3" placeholder="Deadline">
+		        <input type="file" class="form-control" name="file" placeholder="Deadline">
 		      </div>
 		    </div>
 		    <fieldset class="form-group row">
-		      <legend class="col-form-legend col-sm-2">Radios</legend>
+		      <legend class="col-form-legend col-sm-2">Project Deadline</legend>
 		      <div class="col-sm-10">
 		        <div class="form-check">
 		          <label class="form-check-label">
-		            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+		            <input class="form-check-input" type="radio" name="deadline" value="3" checked>
+		            3 days
+		          </label>
+		        </div>
+		        <div class="form-check">
+		          <label class="form-check-label">
+		            <input class="form-check-input" type="radio" name="deadline" value="5">
+		            5 days
+		          </label>
+		        </div>
+		        <div class="form-check">
+		          <label class="form-check-label">
+		            <input class="form-check-input" type="radio" name="deadline" value="15">
+		            15 days
+		          </label>
+		        </div>
+		        <div class="form-check">
+		          <label class="form-check-label">
+		            <input class="form-check-input" type="radio" name="deadline" value="30">
+		            30 days
+		          </label>
+		        </div>
+		      </div>
+		    </fieldset>
+		    <fieldset class="form-group row">
+		      <legend class="col-form-legend col-sm-2">Visibility</legend>
+		      <div class="col-sm-10">
+		        <div class="form-check">
+		          <label class="form-check-label">
+		            <input class="form-check-input" type="radio" name="visibility" value="1" checked>
 		            Make post visible to everyone.
 		          </label>
 		        </div>
 		        <div class="form-check">
 		          <label class="form-check-label">
-		            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+		            <input class="form-check-input" type="radio" name="visibility" value="0">
 		            Only registered users can see the post.
 		          </label>
 		        </div>
 		      </div>
 		    </fieldset>
 		    <div class="form-group row">
-		      <label class="col-sm-2">Checkbox</label>
-		      <div class="col-sm-10">
-		        <div class="form-check">
-		          <label class="form-check-label">
-		            <input class="form-check-input" type="checkbox"> Confirm Information
-		          </label>
-		        </div>
-		      </div>
-		    </div>
-		    <div class="form-group row">
-		      <div class="offset-sm-2 col-sm-10">
+		      <div class="offset-sm-5 col-sm-7">
 		        <button type="submit" class="btn btn-primary">Submit</button>
 		      </div>
 		    </div>
 		  </form>
 		</div>
+		{% if error %}
+		<h3>An error occurred. Please try again</h3>
+		{% else %}
+		{% endif %}
 	</div>
 </div>
 
