@@ -1,0 +1,43 @@
+#aboutheader {
+  background: 
+    linear-gradient(
+      rgba(0, 0, 0, .4),
+      rgba(0, 0, 0, .4)
+    ),
+    url(https://i.imgur.com/zeIdmzK.jpg);
+    background-size: cover;
+  	height: 90vh;
+}
+
+.header1{
+	position:absolute;
+	top:40%;
+	transform:(-50%, -50%);
+	color:white;
+	text-align: center;
+}
+
+#register_login{
+	margin: auto;
+	padding-top: 30px;
+	padding-left: 20%;
+	padding-right: 20%;
+	font-size:24px;
+}
+
+h1{
+  	font-size: 60px;
+}
+
+
+#aboutinfo{
+	margin: auto;
+	padding-top: 30px;
+	padding-left: 20%;
+	padding-right: 20%;
+	font-size:24px;
+}
+
+#aboutlogin{
+	margin-left: 30px;
+}
