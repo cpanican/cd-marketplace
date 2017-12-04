@@ -5,29 +5,23 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/home.css') }}" />
 {% endblock %}
 
-{% block scripts %}
-	<script type="text/javascript" src="{{ url_for('static', filename='scripts/home.js') }}"></script>
-	<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script> 
-	<!-- stats.js lib -->
-	<script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
-	<script src="https://vincentgarreau.com/particles.js/particles.js"></script>
-{% endblock %}
-
 {% block appcontent %}
 <div>
-	<div id="hero-background" class="animate">
-		<div id="hero-text">
-			<h1>Developer's Marketplace</h1>
-			<p>A place where clients and developers work together.</p>
-			<br />
-			{% if not session.logged_in %}
-			<a href="/register"><button class="btn btn-outline-success btn-lg">Get Started</button></a>
-			{% else %}
-			<a href="/posting"><button class="btn btn-outline-success btn-lg">View All Postings</button></a>
-			<a href="/profile"><button class="btn btn-outline-success btn-lg">My Profile</button></a>
-			{% endif %}
-		</div>
+	<div id="hero-background"></div>
+	<div id="hero-text">
+		<h1>Developer's Marketplace</h1>
+		<p>A place where clients and developers work together.</p>
+		<br />
+		{% if not session.logged_in %}
+		<a href="/register"><button class="btn btn-outline-success btn-lg">Get Started</button></a>
+		{% else %}
+		<a href="/posting"><button class="btn btn-outline-success btn-lg">View All Postings</button></a>
+		<a href="/profile"><button class="btn btn-outline-success btn-lg">My Profile</button></a>
+		{% endif %}
 	</div>
+	<script src='https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js'></script>
+	<script src='https://threejs.org/examples/js/libs/stats.min.js'></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='scripts/home.js') }}"></script>
 
 	<div class="container">
 		<div class="row text-center">
