@@ -35,8 +35,7 @@
 #hero-text {
   position: relative;
   text-align: center;
-  top: 30vh;
-  height: 84vh;
+  top: 28vh;
 }
 
 #hero-text h1 {
@@ -47,6 +46,11 @@
 #hero-text p {
   font-size: 30px;
   color: white;
+}
+
+#text-after-hero {
+  margin-top: 66vh;
+  padding-bottom: 20px;
 }
 
 i {

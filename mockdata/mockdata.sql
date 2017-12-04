@@ -16,6 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `bids`
+--
+
+DROP TABLE IF EXISTS `bids`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bids` (
+  `job_id` int(11) DEFAULT NULL,
+  `dev_id` int(11) DEFAULT NULL,
+  `price` int(11) DEFAULT NULL,
+  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bids`
+--
+
+LOCK TABLES `bids` WRITE;
+/*!40000 ALTER TABLE `bids` DISABLE KEYS */;
+INSERT INTO `bids` VALUES (2,1,40,'2017-12-03 21:06:25'),(2,3,231,'2017-12-03 21:13:15');
+/*!40000 ALTER TABLE `bids` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `blacklist`
 --
 
@@ -48,18 +73,18 @@ DROP TABLE IF EXISTS `post`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `post` (
   `job_id` int(11) NOT NULL AUTO_INCREMENT,
-  `description` varchar(255) DEFAULT NULL,
+  `proj_description` varchar(255) DEFAULT NULL,
   `start_price` int(11) DEFAULT NULL,
   `deadline` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `post_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `dev_id` int(11) DEFAULT NULL,
   `client_id` int(11) DEFAULT NULL,
   `title` varchar(45) DEFAULT NULL,
-  `curr_price` int(11) DEFAULT NULL,
   `clicks` int(11) DEFAULT '0',
   `file` longblob,
   `visibility` int(1) DEFAULT '1',
   `project_days` int(2) DEFAULT '3',
+  `bids` int(11) DEFAULT '0',
   PRIMARY KEY (`job_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -70,7 +95,7 @@ CREATE TABLE `post` (
 
 LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
-INSERT INTO `post` VALUES (1,'Hello Developers! Please help me with the design of my startup company\'s database! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec in lacinia eros. Vestibulum efficitur ipsum massa. Fusce ultricies urna sit amet velit bibendum mollis.',40,'2017-12-24 05:01:17','2017-12-03 05:01:17',NULL,2,'Help with database design of startup company',40,0,'',1,5),(2,'Hi! My new startup company needs a landing page! Please help me design it. Aliquam condimentum a quam sed tincidunt. Nunc pharetra, neque varius vulputate semper, odio lectus sagittis risus, eu cursus elit urna ut est. ',30,'2017-12-17 05:05:24','2017-12-03 05:05:24',NULL,2,'Startup Company New Landing Page',30,0,'shiba.txt',1,15),(3,'Hello! I am a bitcoin enthusiast and I would like someone to make me a program to mine bitcoins! Paying a LOT of cash!',100,'2017-12-10 05:07:34','2017-12-03 05:07:34',NULL,5,'Mining bitcoin software',100,0,'shiba.txt',1,30);
+INSERT INTO `post` VALUES (1,'Hello Developers! Please help me with the design of my startup company\'s database! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec in lacinia eros. Vestibulum efficitur ipsum massa. Fusce ultricies urna sit amet velit bibendum mollis.',40,'2017-12-24 05:01:17','2017-12-03 05:01:17',NULL,2,'Help with database design of startup company',35,'',1,5,2),(2,'Hi! My new startup company needs a landing page! Please help me design it. Aliquam condimentum a quam sed tincidunt. Nunc pharetra, neque varius vulputate semper, odio lectus sagittis risus, eu cursus elit urna ut est. ',30,'2017-12-17 05:05:24','2017-12-03 05:05:24',NULL,2,'Startup Company New Landing Page',33,'shiba.txt',1,15,2),(3,'Hello! I am a bitcoin enthusiast and I would like someone to make me a program to mine bitcoins! Paying a LOT of cash!',100,'2017-12-10 05:07:34','2017-12-03 05:07:34',NULL,5,'Mining bitcoin software',57,'shiba.txt',1,30,0);
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -82,13 +107,12 @@ DROP TABLE IF EXISTS `project`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `project` (
-  `job_id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_id` int(11) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `final_price` int(11) DEFAULT NULL,
   `dev_id` int(11) DEFAULT NULL,
   `client_id` int(11) DEFAULT NULL,
-  `dev_rating_desc` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`job_id`)
+  `dev_rating_desc` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -138,7 +162,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'chrispanican@gmail.com','webapp123','2017-12-03 04:08:33','chris1800','d','Chris','Panican',0,0,NULL,1,0,NULL,NULL,NULL,NULL,NULL,0),(2,'haroldfalk@aol.com','webapp123','2017-12-03 04:08:47','haroldfalk','c','Harold','Falk',0,0,NULL,1,0,NULL,NULL,NULL,NULL,NULL,0),(3,'peterparker123@email.com','webapp123','2017-12-03 04:09:12','peterparker','d','Peter','Parker',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(4,'stevejobs@apple.com','webapp123','2017-12-03 04:09:33','stevejobs','d','Steve','Jobs',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(5,'bitcoin@email.com','webapp123','2017-12-03 04:10:32','bitcoin','c','Bitcoin','MineGuy',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(6,'ayylmao@meme.com','webapp123','2017-12-03 04:10:45','ayylmao','c','Ayy','Lmao',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(7,'luigimario','webapp123','2017-12-03 04:11:25','luigimario','c','Luigi','Mario',0,0,NULL,1,0,NULL,NULL,NULL,NULL,NULL,0),(8,'chrispanican','webapp123','2017-12-03 04:25:21','chris','a','Chris','Panican',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0);
+INSERT INTO `users` VALUES (1,'chrispanican@gmail.com','webapp123','2017-12-03 04:08:33','chris1800','d','Chris','Panican',0,0,'Hi I am a developer with tons of experience!',1,0,'Web Development','Chris-Panican-Resume.pdf',NULL,'chrispanican.com',NULL,0),(2,'haroldfalk@aol.com','webapp123','2017-12-03 04:08:47','haroldfalk','c','Harold','Falk',0,0,NULL,1,0,NULL,NULL,NULL,NULL,NULL,0),(3,'peterparker123@email.com','webapp123','2017-12-03 04:09:12','peterparker','d','Peter','Parker',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(4,'stevejobs@apple.com','webapp123','2017-12-03 04:09:33','stevejobs','d','Steve','Jobs',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(5,'bitcoin@email.com','webapp123','2017-12-03 04:10:32','bitcoin','c','Bitcoin','MineGuy',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(6,'ayylmao@meme.com','webapp123','2017-12-03 04:10:45','ayylmao','c','Ayy','Lmao',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0),(7,'luigimario','webapp123','2017-12-03 04:11:25','luigimario','c','Luigi','Mario',0,0,NULL,1,0,NULL,NULL,NULL,NULL,NULL,0),(8,'chrispanican','webapp123','2017-12-03 04:25:21','chris','a','Chris','Panican',0,0,NULL,0,0,NULL,NULL,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -151,4 +175,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-03  0:11:43
+-- Dump completed on 2017-12-03 17:17:06

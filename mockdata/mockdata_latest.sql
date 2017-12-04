@@ -36,7 +36,7 @@ CREATE TABLE `bids` (
 
 LOCK TABLES `bids` WRITE;
 /*!40000 ALTER TABLE `bids` DISABLE KEYS */;
-INSERT INTO `bids` VALUES (2,1,40,'2017-12-03 21:06:25'),(2,3,231,'2017-12-03 21:13:15');
+INSERT INTO `bids` VALUES (2,1,40,'2017-12-03 21:06:25'),(2,3,231,'2017-12-03 21:13:15'),(1,1,123,'2017-12-03 22:29:27');
 /*!40000 ALTER TABLE `bids` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -61,6 +61,7 @@ CREATE TABLE `blacklist` (
 
 LOCK TABLES `blacklist` WRITE;
 /*!40000 ALTER TABLE `blacklist` DISABLE KEYS */;
+INSERT INTO `blacklist` VALUES (6,'posted a meme submission','2017-12-03 19:46:33');
 /*!40000 ALTER TABLE `blacklist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +96,7 @@ CREATE TABLE `post` (
 
 LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
-INSERT INTO `post` VALUES (1,'Hello Developers! Please help me with the design of my startup company\'s database! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec in lacinia eros. Vestibulum efficitur ipsum massa. Fusce ultricies urna sit amet velit bibendum mollis.',40,'2017-12-24 05:01:17','2017-12-03 05:01:17',NULL,2,'Help with database design of startup company',35,'',1,5,2),(2,'Hi! My new startup company needs a landing page! Please help me design it. Aliquam condimentum a quam sed tincidunt. Nunc pharetra, neque varius vulputate semper, odio lectus sagittis risus, eu cursus elit urna ut est. ',30,'2017-12-17 05:05:24','2017-12-03 05:05:24',NULL,2,'Startup Company New Landing Page',33,'shiba.txt',1,15,2),(3,'Hello! I am a bitcoin enthusiast and I would like someone to make me a program to mine bitcoins! Paying a LOT of cash!',100,'2017-12-10 05:07:34','2017-12-03 05:07:34',NULL,5,'Mining bitcoin software',57,'shiba.txt',1,30,0);
+INSERT INTO `post` VALUES (1,'Hello Developers! Please help me with the design of my startup company\'s database! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec in lacinia eros. Vestibulum efficitur ipsum massa. Fusce ultricies urna sit amet velit bibendum mollis.',40,'2017-12-24 05:01:17','2017-12-03 05:01:17',NULL,2,'Help with database design of startup company',39,'',1,5,3),(2,'Hi! My new startup company needs a landing page! Please help me design it. Aliquam condimentum a quam sed tincidunt. Nunc pharetra, neque varius vulputate semper, odio lectus sagittis risus, eu cursus elit urna ut est. ',30,'2017-12-17 05:05:24','2017-12-03 05:05:24',NULL,2,'Startup Company New Landing Page',36,'shiba.txt',1,15,2),(3,'Hello! I am a bitcoin enthusiast and I would like someone to make me a program to mine bitcoins! Paying a LOT of cash!',100,'2017-12-10 05:07:34','2017-12-03 05:07:34',NULL,5,'Mining bitcoin software',59,'shiba.txt',1,30,0);
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -112,7 +113,8 @@ CREATE TABLE `project` (
   `final_price` int(11) DEFAULT NULL,
   `dev_id` int(11) DEFAULT NULL,
   `client_id` int(11) DEFAULT NULL,
-  `dev_rating_desc` varchar(255) DEFAULT NULL
+  `dev_rating_desc` varchar(255) DEFAULT NULL,
+  `client_rating` int(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -175,4 +177,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-03 17:17:06
+-- Dump completed on 2017-12-03 22:33:45
