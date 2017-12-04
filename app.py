@@ -189,13 +189,52 @@ def top3Clients():
 	return data
 
 
+################################## ADMIN FUNCTIONS ############################################
+# return all users in blacklist
+def adminBlacklist():
+	query = "SELECT * FROM users JOIN blacklist ON users.user_id = blacklist.user_id"
+	cur.execute(query)
+	data = cur.fetchall()
+	print("All Blacklist loaded")
+	print(data)
+	return data
+
+# Return all users not on blacklist
+def adminUsers():
+	query = "SELECT * FROM users JOIN blacklist ON blacklist.user_id != users.user_id"
+	cur.execute(query)
+	data = cur.fetchall()
+	print("All Users not on blacklist loaded")
+	print(data)
+	return data
+
+# Return unconfirmed users
+def adminUnconfirmed():
+	query = "SELECT * FROM users JOIN blacklist ON blacklist.user_id != users.user_id WHERE confirmed != 1 AND role != 'a'"
+	cur.execute(query)
+	data = cur.fetchall()
+	print("All unconfirmed users loaded")
+	print(data)
+	return data
+
+# Return projects with reports
+def adminProjReport():
+	query = "SELECT * FROM project WHERE client_rating < 3"
+	cur.execute(query)
+	data = cur.fetchall()
+	print("All reported projects loaded")
+	print(data)
+	return data
 
 
-
-
-
-
-
+# Return users in warning
+def adminWarning():
+	query = "SELECT * FROM users JOIN blacklist ON blacklist.user_id != users.user_id WHERE confirmed != 1 AND role != 'a' AND rating < 3 AND finished_projects >= 5"
+	cur.execute(query)
+	data = cur.fetchall()
+	print("All warned users loaded")
+	print(data)
+	return data
 
 
 
@@ -361,8 +400,17 @@ def compose():
 # TODO: Admins login on the login page with the role of 'a'
 @app.route('/admin')
 def admin():
-	# Check if user is in blacklist
-	return render_template("admin.html")
+	unconfirmed_users = adminUnconfirmed()
+	proj_reports = adminProjReport()
+	warn_users = adminWarning()
+	return render_template("admin.html", unconfirmed=unconfirmed_users, reports=proj_reports, warns=warn_users)
+
+
+@app.route('/admin-users')
+def admin_users():
+	blacklist = adminBlacklist()
+	all_users = adminUsers()
+	return render_template("admin-users.html", blacklist=blacklist, users=all_users)
 
 
 @app.route('/about')

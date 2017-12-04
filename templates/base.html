@@ -45,6 +45,17 @@
 				<a class="nav-link" href="/login">Sign in </a>
 			</li>
 			{% else %}
+			{% if session.role == "a" %}
+			<li {% if request.path == '/admin-users' %}class="active"{% endif %}>
+				<a class="nav-link" href="/admin-users">View All Users </a>
+			</li>
+			<li {% if request.path == '/admin' %}class="active"{% endif %}>
+				<a class="nav-link" href="/admin">Admin Page </a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/signout">Sign out </a>
+			</li>
+			{% else %}
 			<li {% if request.path == '/edit-profile' %}class="active"{% endif %}>
 				<a class="nav-link" href="/edit-profile">Edit Profile </a>
 			</li>
@@ -57,6 +68,7 @@
 			<li class="nav-item">
 				<a class="nav-link" href="/signout">Sign out </a>
 			</li>
+			{% endif %}
 			{% endif %}
 		</ul>
 	</div>

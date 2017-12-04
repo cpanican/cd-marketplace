@@ -11,11 +11,91 @@
 {% endblock %}
 
 {% block appcontent %}
-<br>
-<div class="container-fluid">
+<div class="container">
+	{% if not session.logged_in %}
+	<br>
+	<h4>You cannot access this page.</h4>
+	{% else %}
+	{% if session.role == "a" %}
+	<br>
+	<h1 style="text-align: center">Admin Page</h1>
+	<h4>Unconfirmed users</h4>
 	<div class="row">
-		<h1 style="text-align: center">Admin Page</h1>
+		{% if unconfirmed %}
+		{% for unconf in unconfirmed %}
+		<div class="col-sm-3">
+			<div class="card">
+				<div class="card-block">
+					<a href="/profile/{{ unconf[4] }}"><h4 class="card-title">{{ unconf[6] }} {{ unconf[7] }}</h4></a>
+					{% if unconf[5] == "d" %}
+					<h6 class="card-subtitle mb-2 text-muted">Developer</h6>
+					{% else %}
+					<h6 class="card-subtitle mb-2 text-muted">Client</h6>
+					{% endif %}
+					<p class="card-text">Email: {{ unconf[1] }}</p>
+					<a href="#" class="card-link">Accept User</a>
+					<a href="#" class="card-link">Decline User</a>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+		{% else %}
+		<h5 class="container">No unconfirmed users</h5>
+		{% endif %}
 	</div>
+	<hr>
+	<h4>Project Reports</h4>
+	<div class="row">
+		{% if reports %}
+		{% for report in reports %}
+		<div class="col-sm-3">
+			<div class="card">
+				<div class="card-block">
+					<h4 class="card-title">Client Rating: {{ report[6] }}</h4>
+					<p class="card-text">Message: {{ report[5] }} </p>
+					<a href="/posting/{{ report[0] }}" class="card-link">Review Project</a>
+					<a href="#" class="card-link">Take Action</a>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+		{% else %}
+		<h5 class="container">No reported projects</h5>
+		{% endif %}
+	</div>
+	<hr>
+	<h4>Users in warning</h4>
+	<div class="row">
+		{% if warns %}
+		{% for warn in warns %}
+		<div class="col-sm-3">
+			<div class="card">
+				<div class="card-block">
+					<a href="/profile/{{ warn[4] }}"><h4 class="card-title">{{ warn[6] }} {{ warn[7] }}</h4></a>
+					{% if warn[5] == "d" %}
+					<h6 class="card-subtitle mb-2 text-muted">Developer</h6>
+					{% else %}
+					<h6 class="card-subtitle mb-2 text-muted">Client</h6>
+					{% endif %}
+					<p class="card-text">Email: {{ warn[1] }}</p>
+					<a href="/profile/{{ warn[4] }}" class="card-link">Profile Page</a>
+					<a href="#" class="card-link">Ban User</a>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+		{% else %}
+		<h5 class="container">No warned users</h5>
+		{% endif %}
+	</div>
+	<hr>
+	<a href="/admin-users"><h4>See all blacklisted users</h4></a>
+	<hr>
+	{% else %}
+	<br>
+	<h4>You cannot access this page.</h4>
+	{% endif %}
+	{% endif %}
 </div>
 
 {% endblock %}

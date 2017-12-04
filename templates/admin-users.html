@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block styles %}
+	{{ super () }}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/admin.css') }}" />
+{% endblock %}
+
+{% block scripts %}
+	{{ super() }}
+	<script type="text/javascript" src="{{ url_for('static', filename='scripts/admin.js') }}"></script>
+{% endblock %}
+
+{% block appcontent %}
+<div class="">
+	{% if not session.logged_in %}
+	<br>
+	<h4>You cannot access this page.</h4>
+	{% else %}
+	{% if session.role == "a" %}
+	<br>
+	<h1 style="text-align: center">Admin Page</h1>
+	<h4 style="text-align: center">All Blacklisted Users</h4>
+	<table class="table table-hover">
+		<thead>
+		<tr>
+			<th scope="col">User #</th>
+			<th scope="col">First Name</th>
+			<th scope="col">Last Name</th>
+			<th scope="col">Email</th>
+			<th scope="col">Username</th>
+			<th scope="col">Confirmed?</th>
+			<th scope="col">Role</th>
+			<th scope="col">Rating</th>
+			<th scope="col">Projects</th>
+			<th scope="col">Warning</th>
+			<th scope="col">Days</th>
+			<th scope="col">Reason</th>
+			<th scope="col">Actions</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for blist in blacklist %}
+		<tr>
+			<th scope="row">{{ blist[0] }}</th>
+			<td>{{ blist[6] }}</td>
+			<td>{{ blist[7] }}</td>
+			<td>{{ blist[1] }}</td>
+			<td>{{ blist[4] }}</td>
+			<td>{{ blist[10] }}</td>
+			<td>{{ blist[5] }}</td>
+			<td>{{ blist[8] }}</td>
+			<td>{{ blist[12] }}</td>
+			<td>{{ blist[9] }}</td>
+			<td>{{ blist[21] }} days + 365</td>
+			<td>{{ blist[20] }}</td>
+			<td><a href="/profile/{{ blist[4] }}" class="btn btn-primary btn-sm">Profile</a> <a href="#" class="btn btn-primary btn-sm">Unban User</a></td>
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	<hr>
+	<br>
+	<h4 style="text-align: center">All Registered Users</h4>
+	<table class="table table-hover">
+		<thead>
+		<tr>
+			<th scope="col">User #</th>
+			<th scope="col">First Name</th>
+			<th scope="col">Last Name</th>
+			<th scope="col">Email</th>
+			<th scope="col">Username</th>
+			<th scope="col">Confirmed?</th>
+			<th scope="col">Role</th>
+			<th scope="col">Rating</th>
+			<th scope="col">Projects</th>
+			<th scope="col">Warning</th>
+			<th scope="col">Balance</th>
+			<th scope="col">Actions</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for user in users %}
+		<tr>
+			<th scope="row">{{ user[0] }}</th>
+			<td>{{ user[6] }}</td>
+			<td>{{ user[7] }}</td>
+			<td>{{ user[1] }}</td>
+			<td>{{ user[4] }}</td>
+			<td>{{ user[11] }}</td>
+			<td>{{ user[5] }}</td>
+			<td>{{ user[8] }}</td>
+			<td>{{ user[12] }}</td>
+			<td>{{ user[9] }}</td>
+			<td>${{ user[18] }}</td>
+			<td><a href="/profile/{{ user[4] }}" class="btn btn-primary btn-sm">Profile</a> <a href="#" class="btn btn-primary btn-sm">Ban User</a></td>
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+	<br>
+	<h4>You cannot access this page.</h4>
+	{% endif %}
+	{% endif %}
+</div>
+
+{% endblock %}
