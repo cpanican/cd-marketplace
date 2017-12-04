@@ -15,8 +15,13 @@
 		{% if not session.logged_in %}
 		<a href="/register"><button class="btn btn-outline-success btn-lg">Get Started</button></a>
 		{% else %}
+		{% if session.role == 'a' %}
+		<a href="/posting"><button class="btn btn-outline-success btn-lg">View All Postings</button></a>
+		<a href="/admin"><button class="btn btn-outline-success btn-lg">Admin Page</button></a>
+		{% else %}
 		<a href="/posting"><button class="btn btn-outline-success btn-lg">View All Postings</button></a>
 		<a href="/profile"><button class="btn btn-outline-success btn-lg">My Profile</button></a>
+		{% endif %}
 		{% endif %}
 	</div>
 	<script src='https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js'></script>

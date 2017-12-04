@@ -78,20 +78,6 @@ def registerUser(username, email, password, role, first_name, last_name):
 	print("Inserted to users database successfully")
 	return True
 
-
-# # Post a bid and write it on the database
-def postBid(title, description, start_price, deadline, file, visibility, user_id):
-	query = "INSERT INTO post (title, proj_description, start_price, file, visibility, client_id, curr_price, project_days) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(title, description, start_price, file, visibility, user_id, start_price, deadline)
-	print(query)
-	cur.execute(query)
-	print(type(deadline))
-	query2 = "UPDATE post SET deadline = DATE_ADD(deadline, INTERVAL 7 DAY)"
-	print(query2)
-	cur.execute(query2)
-	print("Inserted to post database successfully")
-	return True
-
-
 def editProfile(user_id, description, interest, resume, sample_work, business_credential):
 	if description:
 		query = "UPDATE users SET description = '{}' WHERE user_id = {}".format(description, user_id)
@@ -116,6 +102,21 @@ def editProfile(user_id, description, interest, resume, sample_work, business_cr
 	print("Updated users database successfully")
 	return True
 
+#################################### FUNCTIONS FOR POSTINGS ######################################################
+#################################################### BUG ON CURR_PRICE #########################################################
+# # Post a bid and write it on the database
+def postBid(title, description, start_price, deadline, file, visibility, user_id):
+	query = "INSERT INTO post (title, proj_description, start_price, file, visibility, client_id, project_days) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(title, description, start_price, file, visibility, user_id, deadline)
+	print(query)
+	cur.execute(query)
+	print(type(deadline))
+	query2 = "UPDATE post SET deadline = DATE_ADD(deadline, INTERVAL 7 DAY)"
+	print(query2)
+	cur.execute(query2)
+	print("Inserted to post database successfully")
+	return True
+
+
 
 # Show all posts newest first on postings page
 def showPosts():
@@ -128,6 +129,14 @@ def showPosts():
 # Show one specific post
 def showOnePost(job_id):
 	query = "SELECT job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id WHERE job_id = {}".format(job_id)
+	cur.execute(query)
+	data = cur.fetchone()
+	return data
+
+
+# Show post with title as parameter
+def showLatestPostByClient(client_id):
+	query = "SELECT job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id WHERE client_id = 2 ORDER BY post_date DESC LIMIT 1;"
 	cur.execute(query)
 	data = cur.fetchone()
 	return data
@@ -312,6 +321,7 @@ def register():
 
 @app.route('/dashboard')
 def dashboard():
+
 	isValidUser = True
 	role = 'Client'
 	if session['role'] == 'd':
@@ -321,6 +331,14 @@ def dashboard():
 		confirmed_user = True
 	elif session['confirmed'] == 0:
 		confirmed_user = False
+
+	session['description'] = getUser(session['username'])[7]
+	session['confirmed'] = getUser(session['username'])[8]
+	session['finished_projects'] = getUser(session['username'])[9]
+	session['interest'] = getUser(session['username'])[10]
+	session['sample_work'] = getUser(session['username'])[11]
+	session['business_credential'] = getUser(session['username'])[12]
+	session['balance'] = getUser(session['username'])[13]
 
 	print(confirmed_user)
 	if role == 'Client':
@@ -364,7 +382,6 @@ def profile(username):
 	# Blacklist user should show when they were banned reason and how many days left:
 
 
-
 @app.route('/compose', methods=['GET','POST'])
 def compose():
 	print("Compose Page")
@@ -389,7 +406,9 @@ def compose():
 		print(visibility)
 		print(user_id)
 		if postBid(title, description, start_price, deadline, file, visibility, user_id):
-			return render_template("post.html")
+			# Get the job_id and return a template
+			posting = showLatestPostByClient(session['user_id'])
+			return render_template("post.html", post=posting)
 		else:
 			error = True
 			return render_template("compose.html", error=error)
@@ -461,6 +480,7 @@ def edit_profile():
 		business_credential = business_credential.replace("'", "''")
 		user_id = session['user_id']
 		editProfile(user_id, description, interest, resume, sample_work, business_credential)
+		return redirect(url_for("dashboard"))
 	return render_template("edit-profile.html")
 
 
@@ -476,9 +496,6 @@ if __name__ == "__main__":
 
 ## BLACKLIST: unban user after 1 year.
 
-## THE DEveloper cannot post, the client can post
-
-## TOP 3 clients and developers are shown in web page
 
 	# username = session['username']
 	# user_id = session['user_id']
