@@ -556,6 +556,18 @@ def edit_profile():
 	return render_template("edit-profile.html")
 
 
+@app.route('/deposit', methods=['GET', 'POST'])
+def deposit():
+	# if method post redirect to dashboard
+	return render_template("deposit.html")
+
+
+@app.route('/withdraw', methods=['GET', 'POST'])
+def withdraw():
+	# if method post redirect to dashboard
+	return render_template("withdraw.html")
+
+
 @app.route('/signout')
 def signout():
 	session['logged_in'] = False
