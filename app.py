@@ -265,6 +265,7 @@ def adminBanProfile(user_id, reason):
 # Unban user from the system
 def adminUnbanProfile(user_id):
 	query = "DELETE FROM blacklist WHERE user_id = {}".format(user_id)
+	cur.execute(query)
 	print(user_id + ' has been unbanned')
 	return True
 
@@ -496,11 +497,11 @@ def admin_unban(user_id):
 	if session['logged_in'] == True:
 		if session['role'] == 'a':
 			adminUnbanProfile(user_id)
-			return redirect(url_for('admin-users'))
+			return redirect(url_for('admin_users'))
 		else:
-			return redirect(url_for('admin-users'))
+			return redirect(url_for('admin_users'))
 	else:
-		return redirect(url_for('admin-users'))
+		return redirect(url_for('admin_users'))
 
 
 @app.route('/about')
