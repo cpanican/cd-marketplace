@@ -33,8 +33,8 @@
 					<h6 class="card-subtitle mb-2 text-muted">Client</h6>
 					{% endif %}
 					<p class="card-text">Email: {{ unconf[1] }}</p>
-					<a href="#" class="card-link">Accept User</a>
-					<a href="#" class="card-link">Decline User</a>
+					<a href="/admin/accept-user/{{ unconf[4] }}" class="card-link">Accept User</a>
+					<a href="/admin/ban/{{ unconf[4] }}" class="card-link">Decline User</a>
 				</div>
 			</div>
 		</div>

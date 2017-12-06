@@ -15,6 +15,7 @@
 <h1 style="text-align: center">Submit a post</h1>
 <div class="container">
 	<div class="row">
+		{% if session.role == 'c' %}
 		<div class="container">
 		<p>All bids will end in 7 days unless the client chooses a developer.</p>
 		<p>If the client hasn't chosen a developer, highest bidder will recieve the project.</p>
@@ -101,7 +102,9 @@
 		</div>
 		{% if error %}
 		<h3>An error occurred. Please try again</h3>
+		{% endif %}
 		{% else %}
+		<h3>You need to be a client to post.</h3>
 		{% endif %}
 	</div>
 </div>

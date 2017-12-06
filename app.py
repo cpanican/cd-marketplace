@@ -210,7 +210,7 @@ def adminBlacklist():
 
 # Return all users not on blacklist
 def adminUsers():
-	query = "SELECT * FROM users JOIN blacklist ON blacklist.user_id != users.user_id"
+	query = "SELECT * FROM users WHERE NOT EXISTS (SELECT user_id FROM blacklist WHERE users.user_id = blacklist.user_id)"
 	cur.execute(query)
 	data = cur.fetchall()
 	print("All Users not on blacklist loaded")
@@ -219,7 +219,7 @@ def adminUsers():
 
 # Return unconfirmed users
 def adminUnconfirmed():
-	query = "SELECT * FROM users JOIN blacklist ON blacklist.user_id != users.user_id WHERE confirmed != 1 AND role != 'a'"
+	query = "SELECT * FROM users WHERE NOT EXISTS (SELECT user_id FROM blacklist WHERE users.user_id = blacklist.user_id) AND confirmed = 0 AND role != 'a'"
 	cur.execute(query)
 	data = cur.fetchall()
 	print("All unconfirmed users loaded")
@@ -246,12 +246,39 @@ def adminWarning():
 	return data
 
 
+# Set user as confirmed profile
+def adminConfirmProfile(username):
+	query = "UPDATE users SET confirmed = 1 WHERE username = '{}'".format(username)
+	cur.execute(query)
+	print(username + ' is now confirmed')
+	return True
+
+
+# Ban user from the system
+def adminBanProfile(user_id, reason):
+	query = "INSERT INTO blacklist (user_id, reason) VALUES ({}, '{}')".format(user_id, reason)
+	cur.execute(query)
+	print("user is successfully banned")
+	return True
+
+
+# Unban user from the system
+def adminUnbanProfile(user_id):
+	query = "DELETE FROM blacklist WHERE user_id = {}".format(user_id)
+	print(user_id + ' has been unbanned')
+	return True
 
 
 # Routes
 @app.route('/')
 def home():
 	print("Home page")
+	if ('logged_in' in session) and (session['logged_in'] == True):
+		print('You are logged in')
+		session['logged_in'] = True
+	else:
+		print('You are not logged in')
+		session['logged_in'] = False
 	bids = top3Bids()
 	devs = top3Devs()
 	clients = top3Clients()
@@ -374,8 +401,10 @@ def profile(username):
 
 	if role == 'd':
 		role = 'Developer'
-	else:
+	if role == 'c':
 		role = 'Client'
+	else:
+		role = 'Admin'
 
 	return render_template("profile.html", email=email, role=role, first_name=first_name, last_name=last_name, rating=rating, warning=warning, description=description, confirmed=confirmed_user, finished_projects=finished_projects, interest=interest, sample_work=sample_work, business_credential=business_credential)
 	# For accepted applicant, they need to be greeted to a edit resume page etc.
@@ -416,7 +445,6 @@ def compose():
 		return render_template("compose.html")
 
 
-# TODO: Admins login on the login page with the role of 'a'
 @app.route('/admin')
 def admin():
 	unconfirmed_users = adminUnconfirmed()
@@ -425,11 +453,54 @@ def admin():
 	return render_template("admin.html", unconfirmed=unconfirmed_users, reports=proj_reports, warns=warn_users)
 
 
+# Admin function: accept user
+@app.route('/admin/accept-user/<username>', methods=['GET', 'POST'])
+def admin_accept(username):
+	if session['logged_in'] == True:
+		if session['role'] == 'a':
+			adminConfirmProfile(username)
+			return redirect(url_for('admin'))
+		else:
+			return redirect(url_for('admin_users'))
+	else:
+		return redirect(url_for('admin_users'))
+
+
+# Admin function: ban user
+@app.route('/admin/ban/<username>', methods=['GET', 'POST'])
+def admin_ban(username):
+	if session['logged_in'] == True:
+		if session['role'] == 'a':
+			ban_user_id = getUser(username)[0]
+			if request.method == 'POST':
+				reason = request.form['reason']
+				adminBanProfile(ban_user_id, reason)
+				return redirect(url_for('admin_users'))
+			else: 
+				return render_template('ban.html', user_id=ban_user_id, username=username)
+		else:
+			return redirect(url_for('admin'))
+	else:
+		return redirect(url_for('admin'))
+
+
 @app.route('/admin-users')
 def admin_users():
 	blacklist = adminBlacklist()
 	all_users = adminUsers()
 	return render_template("admin-users.html", blacklist=blacklist, users=all_users)
+
+
+@app.route('/admin-users/unban/<user_id>')
+def admin_unban(user_id):
+	if session['logged_in'] == True:
+		if session['role'] == 'a':
+			adminUnbanProfile(user_id)
+			return redirect(url_for('admin-users'))
+		else:
+			return redirect(url_for('admin-users'))
+	else:
+		return redirect(url_for('admin-users'))
 
 
 @app.route('/about')
@@ -487,6 +558,7 @@ def edit_profile():
 @app.route('/signout')
 def signout():
 	session['logged_in'] = False
+	session.clear()
 	return redirect(url_for('home'))
 
 

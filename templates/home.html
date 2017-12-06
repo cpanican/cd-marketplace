@@ -55,7 +55,11 @@
 				<p>Clients can post while developers can bid on things.</p>
 				<br />
 				{% if session.logged_in %}
+				{% if session.role == 'a' %}
+				<a href="/admin" class="btn btn-primary btn-lg">Admin Dashboard</a>
+				{% else %}
 				<a href="/dashboard" class="btn btn-primary btn-lg">My Dashboard</a>
+				{% endif %}
 				{% else %}
 				<a href="/register" class="btn btn-primary btn-lg">Client</a>
 				<a href="/register" class="btn btn-primary btn-lg">Developer</a>

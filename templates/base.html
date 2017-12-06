@@ -46,6 +46,12 @@
 			</li>
 			{% else %}
 			{% if session.role == "a" %}
+			<li {% if request.path == '/edit-profile' %}class="active"{% endif %}>
+				<a class="nav-link" href="/edit-profile">Edit Profile </a>
+			</li>
+			<li {% if request.path == '/profile' %}class="active"{% endif %}>
+				<a class="nav-link" href="/profile">My Profile </a>
+			</li>
 			<li {% if request.path == '/admin-users' %}class="active"{% endif %}>
 				<a class="nav-link" href="/admin-users">View All Users </a>
 			</li>

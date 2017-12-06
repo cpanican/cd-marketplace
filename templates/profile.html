@@ -15,10 +15,14 @@
 	<br>
 	<h1 style="text-align: center">Profile</h1>
 	<h2 style="text-align: center">{{first_name}} {{last_name}}</h2>
+	{% if role == 'Admin' %}
+	<p style="text-align: center">This user is an {{role}}</p>
+	{% else %}
 	{% if confirmed %}
 	<p style="text-align: center">This user is confirmed as a {{role}}</p>
 	{% else %}
 	<p style="text-align: center">This user is not confirmed as a {{role}}</p>
+	{% endif %}
 	{% endif %}
 
 	<h5>Description: {{description}}</h5>
