@@ -46,6 +46,12 @@
 			</li>
 			{% else %}
 			{% if session.role == "a" %}
+			<li>
+				<a class="nav-link">Funds: ${{ session.balance }}</a>
+			</li>
+			<li {% if request.path == '/withdraw' %}class="active"{% endif %}>
+				<a class="nav-link" href="/withdraw">Withdraw</a>
+			</li>
 			<li {% if request.path == '/edit-profile' %}class="active"{% endif %}>
 				<a class="nav-link" href="/edit-profile">Edit Profile </a>
 			</li>

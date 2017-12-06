@@ -270,6 +270,30 @@ def adminUnbanProfile(user_id):
 	return True
 
 
+##################### Function for deposit, withdraw, anything that involves money #############3######
+# Deposit money on database
+def depositMoney(username, amount):
+	query = "UPDATE users SET balance = balance + {} WHERE username = '{}'".format(amount, username)
+	cur.execute(query)
+	print("deposit success")
+	return True
+
+# Withdraw money from your account
+def withdrawaMoney(username, amount):
+	query = "UPDATE users SET balance = balance - {} WHERE username = '{}'".format(amount, username)
+	cur.execute(query)
+	print("withdraw success")
+	return True
+
+
+
+
+
+
+
+
+
+
 # Routes
 @app.route('/')
 def home():
@@ -349,30 +373,38 @@ def register():
 
 @app.route('/dashboard')
 def dashboard():
+	isValidUser=False
+	if session['logged_in']:
+		isValidUser = True
+		if session['role'] == 'd':
+			role = 'Developer'
+		elif session['role'] == 'c':
+			role = 'Client'
+		elif session['role'] == 'a':
+			role = 'Admin'
+		print(session['confirmed'])
+		if session['confirmed'] != 0:
+			confirmed_user = True
+		elif session['confirmed'] == 0:
+			confirmed_user = False
 
-	isValidUser = True
-	role = 'Client'
-	if session['role'] == 'd':
-		role = 'Developer'
-	print(session['confirmed'])
-	if session['confirmed'] != 0:
-		confirmed_user = True
-	elif session['confirmed'] == 0:
-		confirmed_user = False
+		session['description'] = getUser(session['username'])[7]
+		session['confirmed'] = getUser(session['username'])[8]
+		session['finished_projects'] = getUser(session['username'])[9]
+		session['interest'] = getUser(session['username'])[10]
+		session['sample_work'] = getUser(session['username'])[11]
+		session['business_credential'] = getUser(session['username'])[12]
+		session['balance'] = getUser(session['username'])[13]
 
-	session['description'] = getUser(session['username'])[7]
-	session['confirmed'] = getUser(session['username'])[8]
-	session['finished_projects'] = getUser(session['username'])[9]
-	session['interest'] = getUser(session['username'])[10]
-	session['sample_work'] = getUser(session['username'])[11]
-	session['business_credential'] = getUser(session['username'])[12]
-	session['balance'] = getUser(session['username'])[13]
-
-	print(confirmed_user)
-	if role == 'Client':
-		return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, client=True)
-	if role == 'Developer':
-		return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, developer=True)
+		print(confirmed_user)
+		if role == 'Client':
+			return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, client=True)
+		if role == 'Developer':
+			return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, developer=True)
+		if role == 'Developer':
+			return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, admin=True)
+	else:
+		return render_template("dashboard.html", isValidUser=False)
 
 
 @app.route('/profile')
@@ -404,7 +436,7 @@ def profile(username):
 		role = 'Developer'
 	if role == 'c':
 		role = 'Client'
-	else:
+	elif role == 'a':
 		role = 'Admin'
 
 	return render_template("profile.html", email=email, role=role, first_name=first_name, last_name=last_name, rating=rating, warning=warning, description=description, confirmed=confirmed_user, finished_projects=finished_projects, interest=interest, sample_work=sample_work, business_credential=business_credential)
@@ -559,12 +591,25 @@ def edit_profile():
 @app.route('/deposit', methods=['GET', 'POST'])
 def deposit():
 	# if method post redirect to dashboard
+	print('deposit')
+	if request.method == 'POST':
+		amount = request.form['balance']
+		username = request.form['username']
+		print(amount)
+		print(username)
+		depositMoney(username, amount)
+		return redirect(url_for("dashboard"))
 	return render_template("deposit.html")
 
 
 @app.route('/withdraw', methods=['GET', 'POST'])
 def withdraw():
 	# if method post redirect to dashboard
+	if request.method == 'POST':
+		amount = request.form['balance']
+		username = request.form['username']
+		withdrawMoney(username, amount)
+		return redirect(url_for("dashboard"))
 	return render_template("withdraw.html")
 
 

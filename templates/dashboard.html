@@ -39,8 +39,10 @@
 			{% if client %}
 			<a href="/compose" class="btn btn-primary" role="button">Post a Bid</a>
 			<a href="/posting" class="btn btn-primary" role="button">See all Postings</a>
-			{% else %}
+			{% elif developer %}
 			<a href="/posting" class="btn btn-primary" role="button">See all Postings</a>
+			{% elif admin %}
+			<a href="/admin" class="btn btn-primary" role="button">Admin Page</a>
 			{% endif %}
 		</div>
 	</div>
