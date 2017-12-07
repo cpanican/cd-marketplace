@@ -279,11 +279,15 @@ def depositMoney(username, amount):
 	return True
 
 # Withdraw money from your account
-def withdrawaMoney(username, amount):
-	query = "UPDATE users SET balance = balance - {} WHERE username = '{}'".format(amount, username)
-	cur.execute(query)
-	print("withdraw success")
-	return True
+def withdrawMoney(username, amount):
+	query1 = "SELECT * FROM users WHERE balance > {} AND username = '{}'".format(amount, username)
+	if cur.execute(query1):
+		query = "UPDATE users SET balance = balance - {} WHERE username = '{}'".format(amount, username)
+		cur.execute(query)
+		print("withdraw success")
+		return True
+	else:
+		return False
 
 
 
@@ -594,12 +598,13 @@ def deposit():
 	print('deposit')
 	if request.method == 'POST':
 		amount = request.form['balance']
-		username = request.form['username']
+		username = session['username']
 		print(amount)
 		print(username)
 		depositMoney(username, amount)
-		return redirect(url_for("dashboard"))
-	return render_template("deposit.html")
+		return render_template("deposit.html", success=True)
+	else:
+		return render_template("deposit.html")
 
 
 @app.route('/withdraw', methods=['GET', 'POST'])
@@ -607,9 +612,11 @@ def withdraw():
 	# if method post redirect to dashboard
 	if request.method == 'POST':
 		amount = request.form['balance']
-		username = request.form['username']
-		withdrawMoney(username, amount)
-		return redirect(url_for("dashboard"))
+		username = session['username']
+		if withdrawMoney(username, amount):
+			return render_template("withdraw.html", success='True')
+		else:
+			return render_template("withdraw.html", success='False')
 	return render_template("withdraw.html")
 
 

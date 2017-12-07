@@ -53,6 +53,10 @@
 		      </div>
 		    </div>
 		  </form>
+		  {% if success %}
+		  <h3>Successfully deposited money into your account!</h3>
+		  <a class="btn btn-primary" href="/dashboard">Return to your dashboard</a>
+		  {% endif %}
 		</div>
 		{% else %}
 		<h3>Please log-in to continue</h3>
