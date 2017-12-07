@@ -361,16 +361,20 @@ def register():
 		conf_password = request.form['confirm-password']
 		email = request.form['email']
 		role = request.form['role']
-
-		if password == conf_password:
-			if (not checkUser(username)) and (not checkEmail(email)):
-				registerUser(username, email, password, role, first_name, last_name)
-				return render_template("register.html", success=True)
+		if len(username) >=5:
+			if len(password) >= 6:
+				if password == conf_password:
+					if (not checkUser(username)) and (not checkEmail(email)):
+						registerUser(username, email, password, role, first_name, last_name)
+						return render_template("register.html", success=True)
+					else:
+						return render_template("register.html", user=True)
+				else:
+					return render_template("register.html", password=True)
 			else:
-				return render_template("register.html", user=True)
+				return render_template("register.html", passwordlength=True)
 		else:
-			return render_template("register.html", password=True)
-
+			return render_template("register.html", usernamelength=True)
 	else:
 		return render_template("register.html")
 

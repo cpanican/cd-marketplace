@@ -48,11 +48,24 @@
 		</ul>
 	</form>
 	<br>
+	{% if usernamelength %}
+	<div>
+		<h4>Username is shorter than 5 characters!</h4>
+	</div>
+	{% endif %}
+
+	{% if passwordlength %}
+	<div>
+		<h4>Password is shorter than 6 characters!</h4>
+	</div>
+	{% endif %}
+
 	{% if password %}
 	<div>
 		<h4>Passwords are not the same!</h4>
 	</div>
 	{% endif %}
+	
 	{% if success %}
 	<div>
 		<h4>You successfully created an account! You can now sign in.</h4>
