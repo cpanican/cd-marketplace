@@ -35,6 +35,9 @@
 			<li {% if request.path == '/posting' %}class="active"{% endif %}>
 				<a class="nav-link" href="/posting">All Postings </a>
 			</li>
+			<li {% if request.path == '/project' %}class="active"{% endif %}>
+				<a class="nav-link" href="/project">All Projects </a>
+			</li>
 		</ul>
 		<ul class="navbar-nav ml-auto">
 			{% if not session.logged_in %}

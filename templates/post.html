@@ -51,6 +51,9 @@
 			<div class="card">
 				<p>Name: <a href="/profile/{{ bid[4] }}">{{ bid[5] }} {{ bid[6] }}</a></p>
 				<p>Price: ${{ bid[2] }}</p>
+				{% if session.username == post[12] %}
+				<a href="/project/{{ post[0] }}/{{ bid[4] }}/{{ bid[2] }}">Choose Developer</a>
+				{% endif %}
 			</div>
 			{% endfor %}
 		</div>

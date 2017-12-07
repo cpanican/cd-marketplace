@@ -102,20 +102,23 @@ def editProfile(user_id, description, interest, resume, sample_work, business_cr
 	print("Updated users database successfully")
 	return True
 
-#################################### FUNCTIONS FOR POSTINGS ######################################################
-#################################################### BUG ON CURR_PRICE #########################################################
-# # Post a bid and write it on the database
-def postBid(title, description, start_price, deadline, file, visibility, user_id):
-	query = "INSERT INTO post (title, proj_description, start_price, file, visibility, client_id, project_days) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(title, description, start_price, file, visibility, user_id, deadline)
-	print(query)
-	cur.execute(query)
-	print(type(deadline))
-	query2 = "UPDATE post SET deadline = DATE_ADD(deadline, INTERVAL 7 DAY)"
-	print(query2)
-	cur.execute(query2)
-	print("Inserted to post database successfully")
-	return True
 
+#################################### FUNCTIONS FOR POSTINGS ######################################################
+# # Post a bid and write it on the database
+def postBid(title, description, start_price, deadline, file, visibility, user_id, budget):
+	query1 = "SELECT * FROM users WHERE user_id = {} AND balance >= {}".format(user_id, budget)
+	if cur.execute(query1):
+		query = "INSERT INTO post (title, proj_description, start_price, file, visibility, client_id, project_days) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(title, description, start_price, file, visibility, user_id, deadline)
+		print(query)
+		cur.execute(query)
+		print(type(deadline))
+		query2 = "UPDATE post SET deadline = DATE_ADD(deadline, INTERVAL 7 DAY)"
+		print(query2)
+		cur.execute(query2)
+		print("Inserted to post database successfully")
+		return True
+	else:
+		return False
 
 
 # Show all posts newest first on postings page
@@ -290,11 +293,30 @@ def withdrawMoney(username, amount):
 		return False
 
 
+######################## Functions for project creation #########################
+def allProjects():
+	query = "SELECT project.job_id, title, status, final_price, u1.first_name, u1.last_name, u2.first_name, u2.last_name FROM project JOIN users u1 ON project.dev_id = u1.user_id JOIN users u2 ON project.client_id = u2.user_id JOIN post ON project.job_id = post.job_id WHERE status = 'Ongoing'"
+	cur.execute(query)
+	data = cur.fetchall()
+	return data
 
 
+def createProject(job_id, dev_id, client_id, price):
+	query = "INSERT INTO project (job_id, status, final_price, dev_id, client_id) VALUES ({}, 'Ongoing', {}, {}, {})".format(job_id, price, dev_id, client_id)
+	cur.execute(query)
+	print("project created")
+	return True
 
+def findProjectAndDev(job_id):
+	query = "SELECT job_id, status, final_price, dev_id, client_id, dev_rating_desc, client_id, submit_text, submit_file, user_id, username, first_name, last_name FROM project JOIN users ON project.dev_id = users.user_id WHERE job_id = {}".format(job_id)
+	cur.execute(query)
+	data = cur.fetchone()
+	return data
 
-
+def submitProject(job_id):
+	query = "UPDATE project SET status = 'Complete' WHERE job_id = {}".format(job_id)
+	cur.execute(query)
+	return True
 
 
 
@@ -460,6 +482,7 @@ def compose():
 		file = request.form['file']
 		visibility = int(request.form['visibility'])
 		user_id = session['user_id']
+		balance = session['balance']
 		description = description.replace("'", "''")
 		title = title.replace("'", "''")
 		print(type(description))
@@ -471,8 +494,7 @@ def compose():
 		print(file)
 		print(visibility)
 		print(user_id)
-		if postBid(title, description, start_price, deadline, file, visibility, user_id):
-			# Get the job_id and return a template
+		if postBid(title, description, start_price, deadline, file, visibility, user_id, balance):
 			posting = showLatestPostByClient(session['user_id'])
 			return render_template("post.html", post=posting)
 		else:
@@ -549,7 +571,6 @@ def about():
 @app.route('/posting')
 def postings():
 	posts = showPosts()
-	#job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, curr_price, file, visibility, project_days, email, username, first_name, last_name, bids
 	return render_template("postings.html", posts=posts)
 
 
@@ -570,6 +591,37 @@ def post(job_id):
 			return render_template("post.html", post=post, bids=bids, success=True)
 	else:
 		return render_template("post.html", post=post, bids=bids)
+
+
+@app.route('/project')
+def allProject():
+	projects = allProjects()
+	# job_id, title, status, final_price, first_name, last_name, first_name, last_name
+	return render_template('project_all.html', posts=projects)
+
+
+@app.route('/project/<job_id>')
+def project(job_id):
+	post = showOnePost(job_id)
+	# job_id, status, final_price, dev_id, client_id, dev_rating_desc, client_id, submit_text, submit_file, user_id, username, first_name, last_name
+	project = findProjectAndDev(job_id)
+	return render_template('project.html', post=post, project=project)
+
+
+@app.route('/project/<job_id>/<dev_name>/<price>', methods=['GET', 'POST'])
+def projectCreate(job_id, dev_name, price):
+	client_id = session['user_id']
+	dev_id = getUser(dev_name)[0]
+	createProject(job_id, dev_id, client_id, price)
+	return redirect(url_for('project', job_id=job_id))
+
+
+@app.route('/project/<job_id>/submit')
+def projectSubmit(job_id):
+	if request.method == 'POST':
+		return render_template('project_submit.html')
+	else:
+		return render_template('project_submit.html')
 
 
 @app.route('/edit-profile' , methods=['GET','POST'])

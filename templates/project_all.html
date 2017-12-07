@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block styles %}
+	{{ super () }}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/postings.css') }}" />
+{% endblock %}
+
+{% block scripts %}
+	{{ super() }}
+	<script type="text/javascript" src="{{ url_for('static', filename='scripts/postings.js') }}"></script>
+{% endblock %}
+
+{% block appcontent %}
+<div class="container">
+	<br>
+	<h1 style="text-align: center">All Ongoing Projects</h1>
+	<br>
+	<div class="row">
+		<div class="container">
+			<div class="row text-center">
+				{% for post in posts %}
+				<div class="col col-md-4">
+					<div id="card-padding" class="card">
+						<div class="card-block">
+							<a href="/project/{{ post[0] }}" style="color:black"><h4 class="card-title">{{ post[1] }}</h4></a>
+							<p>Status: {{ post[2] }}</p>
+							<p>Final Price: ${{ post[3] }}</p>
+							<p>Client: {{ post[4] }} {{ post[5] }}</p>
+							<p>Developer: {{ post[6] }} {{ post[7] }}</p>
+							<a href="/project/{{ post[0] }}" class="btn btn-primary">View Project</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

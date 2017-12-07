@@ -18,8 +18,9 @@
 		{% if session.role == 'c' %}
 		<div class="container">
 		<p>All bids will end in 7 days unless the client chooses a developer.</p>
-		<p>If the client hasn't chosen a developer, highest bidder will recieve the project.</p>
+		<p>If the client hasn't chosen a developer, the lowest bidder will recieve the project.</p>
 		<p>Expired posts without any bidders will have a $10 charge.</p>
+		<p>Minimum required amount to post is your starting price.</p>
 		<br>
 		  <form action="/compose" method="POST">
 		    <div class="form-group row">
@@ -101,7 +102,7 @@
 		  </form>
 		</div>
 		{% if error %}
-		<h3>An error occurred. Please try again</h3>
+		<h3>An error occurred. You might not have enough balance to post. Please try again</h3>
 		{% endif %}
 		{% else %}
 		<h3>You need to be a client to post.</h3>
