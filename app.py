@@ -8,8 +8,8 @@ app.secret_key = os.urandom(12)
 
 
 # connect to database
-# conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace', autocommit=True)
-conn = pymysql.connect(host='us-cdbr-iron-east-05.cleardb.net', user='b6863c0bae30db', password='ea55b91b', db='heroku_ab32a6706138d46', autocommit=True)
+conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace', autocommit=True)
+# conn = pymysql.connect(host='us-cdbr-iron-east-05.cleardb.net', user='b6863c0bae30db', password='ea55b91b', db='heroku_ab32a6706138d46', autocommit=True)
 cur = conn.cursor()
 
 
