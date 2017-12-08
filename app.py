@@ -123,7 +123,7 @@ def postBid(title, description, start_price, deadline, file, visibility, user_id
 
 # Show all posts newest first on postings page
 def showPosts():
-	query = "SELECT job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id ORDER BY post_date DESC"
+	query = "SELECT job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id WHERE NOT EXISTS (SELECT job_id FROM project WHERE post.job_id = project.job_id) ORDER BY post_date DESC"
 	cur.execute(query)
 	data = cur.fetchall()
 	return data
@@ -176,7 +176,7 @@ def incrementBid(job_id):
 
 
 def top3Bids():
-	query = "SELECT * from post ORDER BY clicks DESC LIMIT 3"
+	query = "SELECT * from post WHERE NOT EXISTS (SELECT job_id FROM project WHERE post.job_id = project.job_id) ORDER BY clicks DESC LIMIT 3"
 	cur.execute(query)
 	data = cur.fetchall()
 	print("Top 3 bids loaded")
@@ -619,9 +619,21 @@ def projectCreate(job_id, dev_name, price):
 @app.route('/project/<job_id>/submit')
 def projectSubmit(job_id):
 	if request.method == 'POST':
-		return render_template('project_submit.html')
+		description = request.form['description']
+		file = request.form['file']
+		# do some stuff on database
+		return render_template('project_submit.html', job_id=job_id)
 	else:
-		return render_template('project_submit.html')
+		return render_template('project_submit.html', job_id=job_id)
+
+
+@app.route('/project/<job_id>/terminate')
+def projectTerminate(job_id):
+	if request.method == 'POST':
+		# terminate project and do some stuff on database
+		return render_template('project_terminate.html', job_id=job_id)
+	else:
+		return render_template('project_terminate.html', job_id=job_id)
 
 
 @app.route('/edit-profile' , methods=['GET','POST'])
