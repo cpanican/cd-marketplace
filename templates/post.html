@@ -12,7 +12,9 @@
 
 {% block appcontent %}
 <div class="container">
-	<h1>Project Information</h1>
+	<br>
+	<h1 style="text-align: center">Project Information</h1>
+	<br>
 	<h2>Title: {{ post[7] }}</h2>
 	<h3>Author: <a href="/profile/{{ post[12] }}">{{ post[13] }} {{ post[14] }}</h3></a>
 	<h4>Description</h4>
@@ -25,11 +27,12 @@
 	<div class="row">
 		<div class="col-sm-4">
 			{% if session.logged_in %}
-				{% if client or session.role == 'a' %}
 				<h4>Submit a new offer</h4>
+				{% if session.confirmed == 0 %}
+				<p>You need to be a verified user submit an offer.</p>
+				{% elif client or session.role == 'a' %}
 				<p>You need to become a developer to submit an offer.</p>
 				{% else %}
-				<h4>Submit a new offer</h4>
 				<p>Offer a price to the client</p>
 				<form action="/posting/{{ post[0] }}" method="POST">
 					<input type="number" name="bid" required/>

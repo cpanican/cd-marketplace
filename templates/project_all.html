@@ -17,6 +17,13 @@
 	<br>
 	<div class="row">
 		<div class="container">
+			<div class="text-center">
+				<form class="form-inline my-2 my-lg-0">
+					<input class="form-control mr-sm-2" type="search" placeholder="Search for project">
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+				</form>
+			</div>
+			<hr>
 			<div class="row text-center">
 				{% for post in posts %}
 				<div class="col col-md-4">
@@ -25,8 +32,8 @@
 							<a href="/project/{{ post[0] }}" style="color:black"><h4 class="card-title">{{ post[1] }}</h4></a>
 							<p>Status: {{ post[2] }}</p>
 							<p>Final Price: ${{ post[3] }}</p>
-							<p>Client: {{ post[4] }} {{ post[5] }}</p>
-							<p>Developer: {{ post[6] }} {{ post[7] }}</p>
+							<p>Client: {{ post[6] }} {{ post[7] }}</p>
+							<p>Developer: {{ post[4] }} {{ post[5] }}</p>
 							<a href="/project/{{ post[0] }}" class="btn btn-primary">View Project</a>
 						</div>
 					</div>

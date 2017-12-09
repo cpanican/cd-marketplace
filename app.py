@@ -109,12 +109,59 @@ def editProfile(user_id, description, interest, resume, sample_work, business_cr
 	return True
 
 
+####################### FUNCTION FOR PROFILE PAGE (Active bids, Current Projects, and History Section #############################################
+# Show all active bids for developer
+def showActiveBidsDev(user_id):
+	query = "SELECT bids.job_id, start_price, price, title, project_days FROM bids JOIN post ON bids.job_id = post.job_id WHERE bids.dev_id = {} AND NOT EXISTS (SELECT job_id FROM project WHERE post.job_id = project.job_id)".format(user_id)
+	cur.execute(query)
+	data = cur.fetchall()
+	return data
+
+
+# Show all active bids for client
+def showActiveBidsClient(user_id):
+	query = "SELECT job_id, start_price, title, project_days FROM post WHERE client_id = {} AND NOT EXISTS (SELECT job_id FROM project WHERE post.job_id = project.job_id)".format(user_id)
+	cur.execute(query)
+	data = cur.fetchall()
+	return data
+
+
+# Show all current projects for developer
+def showActiveProjectsDev(user_id):
+	query = "SELECT project.job_id, title, project_days, status, final_price, deadline, post_date FROM project JOIN post ON project.job_id = post.job_id WHERE project.dev_id = {} AND status = 'Ongoing'".format(user_id)
+	cur.execute(query)
+	data = cur.fetchall()
+	return data
+
+
+# Show all current projects
+def showActiveProjectsClient(user_id):
+	query = "SELECT project.job_id, title, project_days, status, final_price, deadline, post_date FROM project JOIN post ON project.job_id = post.job_id WHERE project.client_id = {} AND status = 'Ongoing'".format(user_id)
+	cur.execute(query)
+	data = cur.fetchall()
+	return data
+
+
+# Show completed projects for dev
+def showHistoryDev(user_id):
+	query = "SELECT project.job_id, title, project_days, status, final_price FROM project JOIN post ON project.job_id = post.job_id WHERE project.dev_id = {} AND status = 'Completed'".format(user_id)
+	cur.execute(query)
+	data = cur.fetchall()
+	return data
+
+# Show completed projects for client
+def showHistoryClient(user_id):
+	query = "SELECT project.job_id, title, project_days, status, final_price FROM project JOIN post ON project.job_id = post.job_id WHERE project.client_id = {} AND status = 'Completed'".format(user_id)
+	cur.execute(query)
+	data = cur.fetchall()
+	return data
+
+
 #################################### FUNCTIONS FOR POSTINGS ######################################################
 # # Post a bid and write it on the database
 def postBid(title, description, start_price, deadline, file, visibility, user_id, budget):
 	query1 = "SELECT * FROM users WHERE user_id = {} AND balance >= {}".format(user_id, budget)
 	cur.execute(query1)
-	print('v cuur rc')
 	print(cur.fetchall())
 	if cur.rowcount:
 		query = "INSERT INTO post (title, proj_description, start_price, file, visibility, client_id, project_days) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(title, description, start_price, file, visibility, user_id, deadline)
@@ -170,11 +217,19 @@ def appendClicks(job_id):
 	return True
 
 
+# submit a bid
 def newBid(job_id, dev_id, price):
-	query = "INSERT INTO bids (job_id, dev_id, price) VALUES ({}, {}, {})".format(job_id, dev_id, price)
-	cur.execute(query)
-	print("Bid updated")
-	return True
+	query1 = "SELECT * FROM bids WHERE dev_id = {} AND job_id = {}".format(dev_id, job_id)
+	if (cur.execute(query1)):
+		query2 = "UPDATE bids SET price = {} WHERE job_id = {} AND dev_id = {}".format(price, job_id, dev_id)
+		cur.execute(query2)
+		print("Bid changed")
+		return True
+	else:
+		query3 = "INSERT INTO bids (job_id, dev_id, price) VALUES ({}, {}, {})".format(job_id, dev_id, price)
+		cur.execute(query3)
+		print("Bid updated")
+		return True
 
 
 def incrementBid(job_id):
@@ -302,7 +357,8 @@ def withdrawMoney(username, amount):
 		return False
 
 
-######################## Functions for project creation #########################
+############################################################################################################################################
+######################## Functions for project creation and submission #########################
 def allProjects():
 	query = "SELECT project.job_id, title, status, final_price, u1.first_name, u1.last_name, u2.first_name, u2.last_name FROM project JOIN users u1 ON project.dev_id = u1.user_id JOIN users u2 ON project.client_id = u2.user_id JOIN post ON project.job_id = post.job_id WHERE status = 'Ongoing'"
 	cur.execute(query)
@@ -313,11 +369,19 @@ def allProjects():
 def createProject(job_id, dev_id, client_id, price):
 	query = "INSERT INTO project (job_id, status, final_price, dev_id, client_id) VALUES ({}, 'Ongoing', {}, {}, {})".format(job_id, price, dev_id, client_id)
 	cur.execute(query)
+	query1 = "UPDATE post SET dev_id = {} WHERE job_id = {}".format(dev_id, job_id)
+	cur.execute(query1)
 	print("project created")
 	return True
 
 def findProjectAndDev(job_id):
 	query = "SELECT job_id, status, final_price, dev_id, client_id, dev_rating_desc, client_id, submit_text, submit_file, user_id, username, first_name, last_name FROM project JOIN users ON project.dev_id = users.user_id WHERE job_id = {}".format(job_id)
+	cur.execute(query)
+	data = cur.fetchone()
+	return data
+
+def findProjectDueDate(job_id):
+	query = "SELECT job_id, create_time, due_date FROM project WHERE job_id = {}".format(job_id)
 	cur.execute(query)
 	data = cur.fetchone()
 	return data
@@ -328,8 +392,8 @@ def submitProject(job_id):
 	return True
 
 
-
 # Routes
+# home page
 @app.route('/')
 def home():
 	print("Home page")
@@ -345,6 +409,7 @@ def home():
 	return render_template("home.html", bids=bids, devs=devs, clients=clients)
 
 
+# Login page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	print("Login Page")
@@ -384,6 +449,7 @@ def login():
 	return render_template("login.html", error=error)
 
 
+# register page
 @app.route('/register', methods=['GET','POST'])
 def register():
 	print("Registration page")
@@ -409,17 +475,28 @@ def register():
 		return render_template("register.html")
 
 
+# dashboard page
 @app.route('/dashboard')
 def dashboard():
 	isValidUser=False
 	if session['logged_in']:
 		isValidUser = True
+		user_id = getUser(session['username'])[0]
 		if session['role'] == 'd':
 			role = 'Developer'
+			active_bids = showActiveBidsDev(user_id)
+			curr_projects = showActiveProjectsDev(user_id)
+			history = showHistoryDev(user_id)
 		elif session['role'] == 'c':
 			role = 'Client'
+			active_bids = showActiveBidsClient(user_id)
+			curr_projects = showActiveProjectsClient(user_id)
+			history = showHistoryClient(user_id)
 		elif session['role'] == 'a':
 			role = 'Admin'
+			active_bids = ''
+			curr_projects = ''
+			history = ''
 		print(session['confirmed'])
 		if session['confirmed'] != 0:
 			confirmed_user = True
@@ -436,23 +513,26 @@ def dashboard():
 
 		print(confirmed_user)
 		if role == 'Client':
-			return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, client=True)
+			return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, client=True, active_bids=active_bids, curr_projects=curr_projects, history=history)
 		if role == 'Developer':
-			return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, developer=True)
-		if role == 'Developer':
-			return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, admin=True)
+			return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, developer=True, active_bids=active_bids, curr_projects=curr_projects, history=history)
+		if role == 'Admin':
+			return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role, admin=True, active_bids=active_bids, curr_projects=curr_projects, history=history)
 	else:
 		return render_template("dashboard.html", isValidUser=False)
 
 
+# navbar: Redirect link to profile page
 @app.route('/profile')
 def profile_redirect():
 	print("Profile Redirect")
 	return redirect(url_for('profile', username=session['username']))
 
 
+# show profile
 @app.route('/profile/<username>', methods=['GET'])
 def profile(username):
+	user_id = getUser(username)[0]
 	email = getUser(username)[1]
 	role = getUser(username)[2]
 	first_name = getUser(username)[3]
@@ -472,16 +552,25 @@ def profile(username):
 
 	if role == 'd':
 		role = 'Developer'
+		active_bids = showActiveBidsDev(user_id)
+		curr_projects = showActiveProjectsDev(user_id)
+		history = showHistoryDev(user_id)
 	if role == 'c':
 		role = 'Client'
+		active_bids = showActiveBidsClient(user_id)
+		curr_projects = showActiveProjectsClient(user_id)
+		history = showHistoryClient(user_id)
 	elif role == 'a':
 		role = 'Admin'
+		active_bids = ''
+		curr_projects = ''
+		history = ''
 
-	return render_template("profile.html", email=email, role=role, first_name=first_name, last_name=last_name, rating=rating, warning=warning, description=description, confirmed=confirmed_user, finished_projects=finished_projects, interest=interest, sample_work=sample_work, business_credential=business_credential)
-	# For accepted applicant, they need to be greeted to a edit resume page etc.
-	# Blacklist user should show when they were banned reason and how many days left:
+
+	return render_template("profile.html", email=email, role=role, first_name=first_name, last_name=last_name, rating=rating, warning=warning, description=description, confirmed=confirmed_user, finished_projects=finished_projects, interest=interest, sample_work=sample_work, business_credential=business_credential, active_bids=active_bids, curr_projects=curr_projects, history=history)
 
 
+# compose page
 @app.route('/compose', methods=['GET','POST'])
 def compose():
 	print("Compose Page")
@@ -517,6 +606,7 @@ def compose():
 		return render_template("compose.html")
 
 
+# admin page
 @app.route('/admin')
 def admin():
 	unconfirmed_users = adminUnconfirmed()
@@ -548,7 +638,7 @@ def admin_ban(username):
 				reason = request.form['reason']
 				adminBanProfile(ban_user_id, reason)
 				return redirect(url_for('admin_users'))
-			else: 
+			else:
 				return render_template('ban.html', user_id=ban_user_id, username=username)
 		else:
 			return redirect(url_for('admin'))
@@ -556,6 +646,7 @@ def admin_ban(username):
 		return redirect(url_for('admin'))
 
 
+# admin: show all users
 @app.route('/admin-users')
 def admin_users():
 	blacklist = adminBlacklist()
@@ -563,6 +654,7 @@ def admin_users():
 	return render_template("admin-users.html", blacklist=blacklist, users=all_users)
 
 
+# admin: unban user
 @app.route('/admin-users/unban/<user_id>')
 def admin_unban(user_id):
 	if session['logged_in'] == True:
@@ -575,18 +667,20 @@ def admin_unban(user_id):
 		return redirect(url_for('admin_users'))
 
 
+# about page
 @app.route('/about')
 def about():
 	return render_template("about.html")
 
 
-# postings/project-name
+# show all posts in order of dates
 @app.route('/posting')
 def postings():
 	posts = showPosts()
 	return render_template("postings.html", posts=posts)
 
 
+# show specific post
 @app.route('/posting/<job_id>', methods=['GET', 'POST'])
 def post(job_id):
 	post = showOnePost(job_id)
@@ -606,6 +700,7 @@ def post(job_id):
 		return render_template("post.html", post=post, bids=bids)
 
 
+# show all projects
 @app.route('/project')
 def allProject():
 	projects = allProjects()
@@ -613,6 +708,7 @@ def allProject():
 	return render_template('project_all.html', posts=projects)
 
 
+# show a specific project
 @app.route('/project/<job_id>')
 def project(job_id):
 	post = showOnePost(job_id)
@@ -621,6 +717,7 @@ def project(job_id):
 	return render_template('project.html', post=post, project=project)
 
 
+# create a project and choose a developer if youre a client
 @app.route('/project/<job_id>/<dev_name>/<price>', methods=['GET', 'POST'])
 def projectCreate(job_id, dev_name, price):
 	client_id = session['user_id']
@@ -629,6 +726,7 @@ def projectCreate(job_id, dev_name, price):
 	return redirect(url_for('project', job_id=job_id))
 
 
+# developer: submit a project
 @app.route('/project/<job_id>/submit')
 def projectSubmit(job_id):
 	if request.method == 'POST':
@@ -640,6 +738,7 @@ def projectSubmit(job_id):
 		return render_template('project_submit.html', job_id=job_id)
 
 
+# client: terminate a project
 @app.route('/project/<job_id>/terminate')
 def projectTerminate(job_id):
 	if request.method == 'POST':
@@ -649,6 +748,7 @@ def projectTerminate(job_id):
 		return render_template('project_terminate.html', job_id=job_id)
 
 
+# edit profile
 @app.route('/edit-profile' , methods=['GET','POST'])
 def edit_profile():
 	print("edit-profile Page")
@@ -669,6 +769,7 @@ def edit_profile():
 	return render_template("edit-profile.html")
 
 
+# Deposit money
 @app.route('/deposit', methods=['GET', 'POST'])
 def deposit():
 	# if method post redirect to dashboard
@@ -684,6 +785,7 @@ def deposit():
 		return render_template("deposit.html")
 
 
+# withdraw money
 @app.route('/withdraw', methods=['GET', 'POST'])
 def withdraw():
 	# if method post redirect to dashboard
@@ -697,6 +799,7 @@ def withdraw():
 	return render_template("withdraw.html")
 
 
+# sign out
 @app.route('/signout')
 def signout():
 	session['logged_in'] = False
@@ -706,18 +809,3 @@ def signout():
 
 if __name__ == "__main__":
 	app.run(debug=True)
-
-
-## BLACKLIST: unban user after 1 year.
-
-
-	# username = session['username']
-	# user_id = session['user_id']
-	# email = session['email']
-	# role = session['role']
-	# first_name = session['first_name']
-	# last_name = session['last_name']
-	# rating = session['rating']
-	# warning = session['warning']
-	# description = session['description']
-	# confirmed = session['confirmed']

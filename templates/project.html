@@ -12,7 +12,9 @@
 
 {% block appcontent %}
 <div class="container">
-	<h1>Project Information</h1>
+	<br>
+	<h1 style="text-align: center">Project Information</h1>
+	<br>
 	<h2>Title: {{ post[7] }}</h2>
 	<h3>Author: <a href="/profile/{{ post[12] }}">{{ post[13] }} {{ post[14] }}</h3></a>
 	<h4>Description</h4>
@@ -20,6 +22,7 @@
 	<h5>Project Days: {{ post[10] }} days</h5>
 	<h5>Project Price: ${{ project[2] }}</h5>
 	<h5>Status: {{ project[1] }}</h5>
+	<h5>Deadline: {{ }}
 	<hr>
 	<div class="row">
 		<div class="col-sm-4">

@@ -14,6 +14,7 @@
 <div class="container">
 	<br>
 	<h1 style="text-align: center">Profile</h1>
+	<br>
 	<h2 style="text-align: center">{{first_name}} {{last_name}}</h2>
 	{% if role == 'Admin' %}
 	<p style="text-align: center">This user is an {{role}}</p>
@@ -24,10 +25,7 @@
 	<p style="text-align: center">This user is not confirmed as a {{role}}</p>
 	{% endif %}
 	{% endif %}
-
-	<h5>Description: {{description}}</h5>
-	<h5>Interest: {{interest}}</h5>
-	<h5>Sample Work: {{sample_work}}</h5>
+	<hr>
 	
 	<div class="row">
 		<div class="col col-md-5">
@@ -35,11 +33,13 @@
 		</div>
 		<div class="col col-md-7">
 			<h2>User Summary</h2>
-			<p>Current Projects: 0</p>
-			<p>Ongoing bids: 0</p>
-			<p>Completed Projects: 0</p>
-			<p>Rating: {{rating}}</p>
-			<p>Warnings: {{warning}}</p>
+			<p><strong>Description</strong>: {{description}}</p>
+			<p><strong>Interest</strong>: {{interest}}</p>
+			<p><strong>Sample Work</strong>: {{sample_work}}</p>
+			<p><strong>Business Credential</strong>: {{business_credential}}</p>
+			<p><strong>Completed Projects</strong>: 0</p>
+			<p><strong>Rating</strong>: {{rating}}</p>
+			<p><strong>Warnings</strong>: {{warning}}</p>
 		</div>
 	</div>
 	<br>
@@ -47,19 +47,90 @@
 	<div>
 		<h3>Active Bids</h3>
 		<hr>
-		<p>Notice: This user doesn't have any ongoing bids!</p>
+		{% if active_bids %}
+			<div class="row text-center">
+				{% if role == 'Developer' %}
+				{% for bids in active_bids %}
+				<div class="col col-md-4">
+					<div id="card-padding" class="card">
+						<div class="card-block">
+							<a href="/posting/{{ bids[0] }}" style="color:black"><h4 class="card-title">{{ bids[3] }}</h4></a>
+							<p>Start Price: ${{ bids[1] }}</p>
+							<p>Bid by this user: ${{ bids[2] }}</p>
+							<p>Project Days: {{ bids[4] }}</p>
+							<a href="/posting/{{ bids[0] }}" class="btn btn-primary">View Posting</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+				{% elif role == 'Client' %}
+				{% for bids in active_bids %}
+				<div class="col col-md-4">
+					<div id="card-padding" class="card">
+						<div class="card-block">
+							<a href="/posting/{{ bids[0] }}" style="color:black"><h4 class="card-title">{{ bids[2] }}</h4></a>
+							<p>Start Price: ${{ bids[1] }}</p>
+							<p>Project Days: {{ bids[3] }}</p>
+							<a href="/posting/{{ bids[0] }}" class="btn btn-primary">View Posting</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+				{% else %}
+				<p>Notice: This user doesn't have any or participating to any ongoing bids!</p>
+				{% endif %}
+			</div>
+		{% else %}
+		<p>Notice: This user doesn't have any or participating to any ongoing bids!</p>
+		{% endif %}
 		<br>
 	</div>
 	<div>
 		<h3>Current Projects</h3>
 		<hr>
-		<p>Notice: This user doesn't  have any projects!</p>
+		{% if curr_projects %}
+			<div class="row text-center">
+				{% for project in curr_projects %}
+				<div class="col col-md-4">
+					<div id="card-padding" class="card">
+						<div class="card-block">
+							<a href="/project/{{ project[0] }}" style="color:black"><h4 class="card-title">{{ project[1] }}</h4></a>
+							<p>Final Price: ${{ project[4] }}</p>
+							<p>Status: {{ project[3] }}</p>
+							<p>Project Days: {{ project[2] }}</p>
+							<a href="/project/{{ project[0] }}" class="btn btn-primary">View Project</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		{% else %}
+		<p>Notice: This user is not part of any projects!</p>
+		{% endif %}
 		<br>
 	</div>
 	<div>
 		<h3>History</h3>
 		<hr>
-		<p>Notice: This user doesn't  have any history!</p>
+		{% if history %}
+			<div class="row text-center">
+				{% for hist in history %}
+				<div class="col col-md-4">
+					<div id="card-padding" class="card">
+						<div class="card-block">
+							<a href="/project/{{ hist[0] }}" style="color:black"><h4 class="card-title">{{ hist[1] }}</h4></a>
+							<p>Final Price: ${{ hist[4] }}</p>
+							<p>Status: {{ hist[3] }}</p>
+							<p>Project Days: {{ hist[2] }}</p>
+							<a href="/project/{{ hist[0] }}" class="btn btn-primary">View Project</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		{% else %}
+		<p>Notice: This user does not have any history!</p>
+		{% endif %}
 		<br>
 	</div>
 </div>

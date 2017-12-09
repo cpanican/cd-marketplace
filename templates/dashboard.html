@@ -15,6 +15,7 @@
 	{% if isValidUser %}
 	<br>
 	<h1 style="text-align: center">Dashboard</h1>
+	<br>
 	<h2 style="text-align: center">Hello, {{session.first_name}} {{session.last_name}}</h2>
 	{% if confirmed %}
 	<p style="text-align: center">You are confirmed as a {{role}}</p>
@@ -22,9 +23,7 @@
 	{% else %}
 	<p style="text-align: center">You are not confirmed as a {{role}}</p>
 	{% endif %}
-	<h5>Description: {{session.description}}</h5>
-	<h5>Interest: {{session.interest}}</h5>
-	<h5>Sample Work: {{session.sample_work}}</h5>
+	<hr>
 
 	<div class="row">
 		<div class="col col-md-5">
@@ -32,11 +31,14 @@
 		</div>
 		<div class="col col-md-7">
 			<h2>Your Dashboard Summary</h2>
-			<p>Current Projects: 0</p>
-			<p>Ongoing bids: 0</p>
-			<p>Completed Projects: 0</p>
-			<p>Your rating: {{session.rating}}</p>
-			<p>Warnings: {{session.warning}}</p>
+			<p><strong>Description</strong>: {{session.description}}</p>
+			<p><strong>Interest</strong>: {{session.interest}}</p>
+			<p><strong>Sample Work</strong>: {{session.sample_work}}</p>
+			<p><strong>Business Credential</strong>: {{session.business_credential}}</p>
+			<p><strong>Completed Projects</strong>: {{session.finished_projects}}</p>
+			<p><strong>Rating</strong>: {{session.rating}}</p>
+			<p><strong>Warnings</strong>: {{session.warning}}</p>
+
 			{% if client %}
 			<a href="/compose" class="btn btn-primary" role="button">Post a Bid</a>
 			<a href="/posting" class="btn btn-primary" role="button">See all Postings</a>
@@ -52,19 +54,90 @@
 	<div>
 		<h3>Active Bids</h3>
 		<hr>
-		<p>Notice: You don't have any ongoing bids!</p>
+		{% if active_bids %}
+			<div class="row text-center">
+				{% if role == 'Developer' %}
+				{% for bids in active_bids %}
+				<div class="col col-md-4">
+					<div id="card-padding" class="card">
+						<div class="card-block">
+							<a href="/posting/{{ bids[0] }}" style="color:black"><h4 class="card-title">{{ bids[3] }}</h4></a>
+							<p>Start Price: ${{ bids[1] }}</p>
+							<p>Bid by you: ${{ bids[2] }}</p>
+							<p>Project Days: {{ bids[4] }}</p>
+							<a href="/posting/{{ bids[0] }}" class="btn btn-primary">View Posting</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+				{% elif role == 'Client' %}
+				{% for bids in active_bids %}
+				<div class="col col-md-4">
+					<div id="card-padding" class="card">
+						<div class="card-block">
+							<a href="/posting/{{ bids[0] }}" style="color:black"><h4 class="card-title">{{ bids[2] }}</h4></a>
+							<p>Start Price: ${{ bids[1] }}</p>
+							<p>Project Days: {{ bids[3] }}</p>
+							<a href="/posting/{{ bids[0] }}" class="btn btn-primary">View Posting</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+				{% else %}
+				<p>Notice: This user doesn't have any or participating to any ongoing bids!</p>
+				{% endif %}
+			</div>
+		{% else %}
+		<p>Notice: This user doesn't have any or participating to any ongoing bids!</p>
+		{% endif %}
 		<br>
 	</div>
 	<div>
 		<h3>Current Projects</h3>
 		<hr>
-		<p>Notice: You don't have any projects!</p>
+		{% if curr_projects %}
+			<div class="row text-center">
+				{% for project in curr_projects %}
+				<div class="col col-md-4">
+					<div id="card-padding" class="card">
+						<div class="card-block">
+							<a href="/project/{{ project[0] }}" style="color:black"><h4 class="card-title">{{ project[1] }}</h4></a>
+							<p>Final Price: ${{ project[4] }}</p>
+							<p>Status: {{ project[3] }}</p>
+							<p>Project Days: {{ project[2] }}</p>
+							<a href="/project/{{ project[0] }}" class="btn btn-primary">View Project</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		{% else %}
+		<p>Notice: This user is not part of any projects!</p>
+		{% endif %}
 		<br>
 	</div>
 	<div>
 		<h3>History</h3>
 		<hr>
+		{% if history %}
+			<div class="row text-center">
+				{% for hist in history %}
+				<div class="col col-md-4">
+					<div id="card-padding" class="card">
+						<div class="card-block">
+							<a href="/project/{{ hist[0] }}" style="color:black"><h4 class="card-title">{{ hist[1] }}</h4></a>
+							<p>Final Price: ${{ hist[4] }}</p>
+							<p>Status: {{ hist[3] }}</p>
+							<p>Project Days: {{ hist[2] }}</p>
+							<a href="/project/{{ hist[0] }}" class="btn btn-primary">View Project</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		{% else %}
 		<p>Notice: You don't have any history!</p>
+		{% endif %}
 		<br>
 	</div>
 
