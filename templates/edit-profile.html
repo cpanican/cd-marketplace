@@ -13,6 +13,7 @@
 {% block appcontent %}
 <br>
 <h1 style="text-align: center">Edit profile</h1>
+{% if session.confirmed == 1 %}
 <p style="text-align: center">Congratulations for being verified! You can now add more information in your profile</p>
 <div class="container">
 	<div class="row">
@@ -62,5 +63,8 @@
 		{% endif %}
 	</div>
 </div>
+{% else %}
+<p style="text-align: center">You are not still verified. You cannot add more details yet.</p>
+{% endif %}
 
 {% endblock %}

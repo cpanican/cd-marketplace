@@ -34,6 +34,11 @@
 		Error: Wrong username/password or account does not exist!
 	</p>
 	{% endif %}
+	{% if blacklist %}
+	<p>Notice: You cannot log-in to your account because you were banned.</p>
+	<p>Reason: {{ blacklist[0] }}</p>
+	<p>Date banned: {{ blacklist[1] }}</p>
+	{% endif %}
 </div>
 	
 

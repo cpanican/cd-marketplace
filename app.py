@@ -60,16 +60,21 @@ def getUserById(user_id):
 	return data
 
 # Return True if user in blacklist
-def getBlacklist(username):
+def checkBlacklist(username):
 	query = "SELECT reason, date FROM blacklist JOIN users ON blacklist.user_id = users.user_id WHERE username LIKE '{}'".format(username)
 	if cur.execute(query):
-		data = cur.fetchone()
-		print(data)
 		print("user is in the blacklist")
-		return data
+		return True
 	else:
 		print("user is not in the blacklist")
-		return
+		return False
+
+def getBlacklist(username):
+	query = "SELECT reason, date FROM blacklist JOIN users ON blacklist.user_id = users.user_id WHERE username LIKE '{}'".format(username)
+	cur.execute(query)
+	data = cur.fetchone()
+	print(data)
+	return data
 
 
 # Insert new_user to the database
@@ -108,7 +113,10 @@ def editProfile(user_id, description, interest, resume, sample_work, business_cr
 # # Post a bid and write it on the database
 def postBid(title, description, start_price, deadline, file, visibility, user_id, budget):
 	query1 = "SELECT * FROM users WHERE user_id = {} AND balance >= {}".format(user_id, budget)
-	if cur.execute(query1):
+	cur.execute(query1)
+	print('v cuur rc')
+	print(cur.fetchall())
+	if cur.rowcount:
 		query = "INSERT INTO post (title, proj_description, start_price, file, visibility, client_id, project_days) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(title, description, start_price, file, visibility, user_id, deadline)
 		print(query)
 		cur.execute(query)
@@ -140,7 +148,7 @@ def showOnePost(job_id):
 
 # Show post with title as parameter
 def showLatestPostByClient(client_id):
-	query = "SELECT job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id WHERE client_id = 2 ORDER BY post_date DESC LIMIT 1;"
+	query = "SELECT job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id WHERE client_id = {} ORDER BY post_date DESC LIMIT 1".format(client_id)
 	cur.execute(query)
 	data = cur.fetchone()
 	return data
@@ -362,7 +370,10 @@ def login():
 			session['business_credential'] = getUser(username)[12]
 			session['balance'] = getUser(username)[13]
 			session['logged_in'] = True
-			getBlacklist(username)
+			if checkBlacklist(username):
+				data = getBlacklist(username)
+				session['logged_in'] = False
+				return render_template("login.html", blacklist=data)
 			if session['role'] != 'a':
 				return redirect(url_for('dashboard'))
 			else:
@@ -483,9 +494,10 @@ def compose():
 		file = request.form['file']
 		visibility = int(request.form['visibility'])
 		user_id = session['user_id']
-		balance = session['balance']
+		balance = request.form['start_price']
 		description = description.replace("'", "''")
 		title = title.replace("'", "''")
+		print('FDSAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
 		print(type(description))
 		print(type(file))
 		print(title)

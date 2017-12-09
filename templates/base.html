@@ -71,6 +71,7 @@
 				<a class="nav-link" href="/signout">Sign out </a>
 			</li>
 			{% else %}
+			{% if session.confirmed == 1 %}
 			<li>
 				<a class="nav-link">Funds: ${{ session.balance }}</a>
 			</li>
@@ -83,6 +84,7 @@
 			<li {% if request.path == '/edit-profile' %}class="active"{% endif %}>
 				<a class="nav-link" href="/edit-profile">Edit Profile </a>
 			</li>
+			{% endif %}
 			<li {% if request.path == '/dashboard' %}class="active"{% endif %}>
 				<a class="nav-link" href="/dashboard">Dashboard </a>
 			</li>

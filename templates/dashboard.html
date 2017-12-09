@@ -18,10 +18,11 @@
 	<h2 style="text-align: center">Hello, {{session.first_name}} {{session.last_name}}</h2>
 	{% if confirmed %}
 	<p style="text-align: center">You are confirmed as a {{role}}</p>
+	<p style="text-align: center">You can now edit your profile and add more details.</p>
 	{% else %}
 	<p style="text-align: center">You are not confirmed as a {{role}}</p>
 	{% endif %}
-	<h5>{{session.description}}</h5>
+	<h5>Description: {{session.description}}</h5>
 	<h5>Interest: {{session.interest}}</h5>
 	<h5>Sample Work: {{session.sample_work}}</h5>
 

@@ -17,6 +17,7 @@
 <div class="container">
 	<div class="row">
 		{% if session.logged_in %}
+		{% if session.confirmed == 1 %}
 		<div class="container">
 		<p>You can deposit funds to your account so that it can be used in the system.</p>
 		<p>We support all major credit/debit cards.</p>
@@ -58,6 +59,9 @@
 		  <a class="btn btn-primary" href="/dashboard">Return to your dashboard</a>
 		  {% endif %}
 		</div>
+		{% else %}
+		<p>Your account is not confirmed yet</p>
+		{% endif %}
 		{% else %}
 		<h3>Please log-in to continue</h3>
 		{% endif %}
