@@ -7,10 +7,10 @@ app = Flask(__name__)
 app.secret_key = 'somerandomtext'
 
 # connect to database
-conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace',
-                       autocommit=True)
-# conn = pymysql.connect(host='us-cdbr-iron-east-05.cleardb.net', user='b6863c0bae30db', password='ea55b91b',
-#                        db='heroku_ab32a6706138d46', autocommit=True)
+# conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace',
+#                        autocommit=True)
+conn = pymysql.connect(host='us-cdbr-iron-east-05.cleardb.net', user='ba269511c15654', password='bafb1cdd',
+                       db='heroku_13d3dee5aa34929', autocommit=True)
 cur = conn.cursor()
 
 
