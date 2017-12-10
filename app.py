@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, flash
 import pymysql
 import sys
 import os
+import pprint
 
 app = Flask(__name__)
 app.secret_key = os.urandom(12)
@@ -16,6 +17,8 @@ cur = conn.cursor()
 ################################################################ LOGIN REGISTER FUNCTIONS ################################################################
 # Checks if user is on database. Used in login
 def checkLogin(username, password):
+	query1 = "SET SQL_SAFE_UPDATES = 0"
+	cur.execute(query1)
 	query = "SELECT * FROM users WHERE username LIKE '{}' AND password LIKE '{}'".format(username, password)
 	print(bool(cur.execute(query)))
 	if cur.execute(query):
@@ -34,8 +37,6 @@ def checkUser(username):
 		return False
 
 
-# TODO: Check if the email is on blacklist
-# Check if email has a duplicate. Used for registration
 def checkEmail(email):
 	query = "SELECT * FROM users WHERE email LIKE '{}'".format(email)
 	print(bool(cur.execute(query)))
@@ -244,7 +245,8 @@ def top3Bids():
 	cur.execute(query)
 	data = cur.fetchall()
 	print("Top 3 bids loaded")
-	print(data)
+	pp = pprint.PrettyPrinter(depth=6)
+	pp.pprint(data)
 	return data
 
 def top3Devs():
@@ -261,7 +263,8 @@ def top3Clients():
 	cur.execute(query)
 	data = cur.fetchall()
 	print("Top 3 clients loaded")
-	print(data)
+	pp = pprint.PrettyPrinter(depth=6)
+	pp.pprint(data)
 	return data
 
 
@@ -272,7 +275,8 @@ def adminBlacklist():
 	cur.execute(query)
 	data = cur.fetchall()
 	print("All Blacklist loaded")
-	print(data)
+	pp = pprint.PrettyPrinter(depth=6)
+	pp.pprint(data)
 	return data
 
 # Return all users not on blacklist
@@ -305,7 +309,7 @@ def adminProjReport():
 
 # Return users in warning
 def adminWarning():
-	query = "SELECT * FROM users JOIN blacklist ON blacklist.user_id != users.user_id WHERE confirmed != 1 AND role != 'a' AND rating < 15 AND finished_projects >= 5"
+	query = "SELECT * FROM users WHERE confirmed != 0 AND role != 'a' AND rating < 15 AND finished_projects >= 5"
 	cur.execute(query)
 	data = cur.fetchall()
 	print("All warned users loaded")
@@ -337,20 +341,46 @@ def adminUnbanProfile(user_id):
 	return True
 
 
+# Warn user
+def adminWarnUser(username):
+	query1 = "SET SQL_SAFE_UPDATES = 0"
+	cur.execute(query1)
+	query = "UPDATE users SET warning = warning + 1 WHERE username = '{}'".format(username)
+	cur.execute(query)
+	return True
+
+
+# Take action for project complaints
+def adminTakeAction(project_id, dev_rating, client_rating, old_dev_rating, old_client_rating, dev_id, client_id):
+	query1 = "SET SQL_SAFE_UPDATES = 0"
+	cur.execute(query1)
+	query2 = "UPDATE project SET status = 'Completed', dev_rating = {}, client_rating = {} WHERE job_id = {}".format(dev_rating, client_rating, project_id)
+	cur.execute(query2)
+	query3 = "UPDATE users SET rating = rating - {} + {} WHERE user_id = {}".format(old_dev_rating, dev_rating, dev_id)
+	cur.execute(query3)
+	query4 = "UPDATE users SET rating = rating - {} + {} WHERE user_id = {}".format(old_client_rating, client_rating, client_id)
+	cur.execute(query4)
+	return True
+
+
 ##################### Function for deposit, withdraw, anything that involves money #############3######
 # Deposit money on database
 def depositMoney(username, amount):
-	query = "UPDATE users SET balance = balance + {} WHERE username = '{}'".format(amount, username)
-	cur.execute(query)
+	query1 = "SET SQL_SAFE_UPDATES = 0"
+	cur.execute(query1)
+	query2 = "UPDATE users SET balance = balance + {} WHERE username = '{}'".format(amount, username)
+	cur.execute(query2)
 	print("deposit success")
 	return True
 
 # Withdraw money from your account
 def withdrawMoney(username, amount):
-	query1 = "SELECT * FROM users WHERE balance > {} AND username = '{}'".format(amount, username)
+	query1 = "SELECT * FROM users WHERE balance >= {} AND username = '{}'".format(amount, username)
 	if cur.execute(query1):
-		query = "UPDATE users SET balance = balance - {} WHERE username = '{}'".format(amount, username)
-		cur.execute(query)
+		query2 = "SET SQL_SAFE_UPDATES = 0"
+		cur.execute(query2)
+		query3 = "UPDATE users SET balance = balance - {} WHERE username = '{}'".format(amount, username)
+		cur.execute(query3)
 		print("withdraw success")
 		return True
 	else:
@@ -365,6 +395,15 @@ def allProjects():
 	data = cur.fetchall()
 	return data
 
+# Check if client has enough money to accept bid
+def checkProjectBalance(client_id, price):
+	query = "SELECT balance FROM users WHERE balance >= {} AND user_id = {}".format(price, client_id)
+	if cur.execute(query):
+		return True
+	else:
+		return False
+
+
 
 def createProject(job_id, dev_id, client_id, price, project_days):
 	query = "INSERT INTO project (job_id, status, final_price, dev_id, client_id) VALUES ({}, 'Ongoing', {}, {}, {})".format(job_id, price, dev_id, client_id)
@@ -375,10 +414,28 @@ def createProject(job_id, dev_id, client_id, price, project_days):
 	cur.execute(query2)
 	query3 = "UPDATE project SET due_date = DATE_ADD(due_date, INTERVAL {} DAY) WHERE job_id = {}".format(project_days, job_id)
 	cur.execute(query3)
-	query4 = "SET SQL_SAFE_UPDATES = 1"
+	# Calculate admin cut
+	admin_cut = float(price) * 0.05
+	remaining_price = float(price) - admin_cut
+	# Give have of balance to developer
+	half_price = float(remaining_price)/2
+	query4 = "UPDATE users SET balance = balance + {} WHERE user_id = {}".format(half_price, dev_id)
 	cur.execute(query4)
+	query5 = "UPDATE users SET balance = balance - {} WHERE user_id = {}".format(price, client_id)
+	cur.execute(query5)
+	query6 = "UPDATE users SET balance = balance + {} + {} WHERE user_id = 1".format(admin_cut, half_price)
+	cur.execute(query6)
+	query7 = "SET SQL_SAFE_UPDATES = 1"
+	cur.execute(query7)
 	print("project created")
 	return True
+
+def findProject(job_id):
+	query = "SELECT * FROM project WHERE job_id = {}".format(job_id)
+	cur.execute(query)
+	data = cur.fetchone()
+	return data
+
 
 def findProjectAndDev(job_id):
 	query = "SELECT job_id, status, final_price, dev_id, client_id, dev_rating_desc, client_id, submit_text, submit_file, user_id, username, first_name, last_name, client_rating_desc, dev_rating, client_rating FROM project JOIN users ON project.dev_id = users.user_id WHERE job_id = {}".format(job_id)
@@ -397,8 +454,6 @@ def submitProject(job_id, dev_id, description, file):
 	cur.execute(query1)
 	query2 = "UPDATE project SET status = 'Pending', submit_text = '{}', submit_file = '{}' WHERE job_id = {}".format(description, file, job_id)
 	cur.execute(query2)
-	query3 = "SET SQL_SAFE_UPDATES = 1"
-	cur.execute(query3)
 	return True
 
 
@@ -410,10 +465,18 @@ def giveProjectReviewForDeveloper(job_id, user_id, description, rating, status):
 	cur.execute(query2)
 	query3 = "UPDATE users SET rating = rating + {}, finished_projects = finished_projects + 1 WHERE user_id = {}".format(rating, user_id)
 	cur.execute(query3)
-	query4 = "SET SQL_SAFE_UPDATES = 1"
-	cur.execute(query4)
 	return True
 
+def developerTransferRemaining(job_id, user_id):
+	final_price = findProject(job_id)[2]
+	admin_cut = float(final_price) * 0.05
+	price_after_cut = float(final_price) - admin_cut
+	remaining_balance = float(price_after_cut)/2
+	query1 = "UPDATE users SET balance = balance - {} WHERE user_id = 1".format(remaining_balance)
+	cur.execute(query1)
+	query2 = "UPDATE users SET balance = balance + {} WHERE user_id = {}".format(remaining_balance, user_id)
+	cur.execute(query2)
+	return True
 
 
 # From developer to client review
@@ -424,8 +487,6 @@ def giveProjectReviewForClient(job_id, user_id, description, rating):
 	cur.execute(query2)
 	query3 = "UPDATE users SET rating = rating + {}, finished_projects = finished_projects + 1 WHERE user_id = {}".format(rating, user_id)
 	cur.execute(query3)
-	query4 = "SET SQL_SAFE_UPDATES = 1"
-	cur.execute(query4)
 	return True
 
 
@@ -693,6 +754,19 @@ def admin_ban(username):
 		return redirect(url_for('admin'))
 
 
+@app.route('/admin/warn/<username>', methods=['GET', 'POST'])
+def admin_warn(username):
+	if session['logged_in'] == True:
+		if session['role'] == 'a':
+			adminWarnUser(username)
+			link = '/profile/{}'.format(username)
+			return redirect(link)
+		else:
+			return redirect(url_for('admin'))
+	else:
+		return redirect(url_for('admin'))
+
+
 # admin: show all users
 @app.route('/admin-users')
 def admin_users():
@@ -718,6 +792,16 @@ def admin_unban(user_id):
 @app.route('/admin/take_action/<project_id>', methods=['GET', 'POST'])
 def admin_takeaction(project_id):
 	if request.method == 'POST':
+		money = request.form['money']
+		dev_rating = request.form['drating']
+		client_rating = request.form['crating']
+		old_dev_rating = findProject(project_id)[9]
+		old_client_rating = findProject(project_id)[6]
+		dev_id = findProject(project_id)[3]
+		client_id = findProject(project_id)[4]
+		print('MONEY')
+		print(money)
+		adminTakeAction(project_id, dev_rating, client_rating, old_dev_rating, old_client_rating, dev_id, client_id)
 		return redirect(url_for('admin'))
 	else:
 		return render_template('admin_takeaction.html', project_id=project_id)
@@ -767,6 +851,7 @@ def allProject():
 # show a specific project
 @app.route('/project/<job_id>')
 def project(job_id):
+
 	post = showOnePost(job_id)
 	# job_id, status, final_price, dev_id, client_id, dev_rating_desc, client_id, submit_text, submit_file, user_id, username, first_name, last_name
 	project = findProjectAndDev(job_id)
@@ -779,8 +864,16 @@ def project(job_id):
 def projectCreate(job_id, dev_name, price, project_days):
 	client_id = session['user_id']
 	dev_id = getUser(dev_name)[0]
-	createProject(job_id, dev_id, client_id, price, project_days)
-	return redirect(url_for('project', job_id=job_id))
+	print("GASGFDSGDSFGSDFGSDFGSDFGDSFGDSFGDF")
+	print(bool(checkProjectBalance(client_id, price)))
+	if checkProjectBalance(client_id, price):
+		createProject(job_id, dev_id, client_id, price, project_days)
+		session['balance'] = getUser(session['username'])[13]
+		return redirect(url_for('project', job_id=job_id))
+	else:
+		flash('You dont have enough balance')
+		return redirect(url_for('post', job_id=job_id))
+	
 
 
 # developer: submit a project
@@ -823,6 +916,7 @@ def projectReview(job_id, username):
 				giveProjectReviewForDeveloper(job_id, user_id, description, rating, status)
 			else:
 				status = 'Completed'
+				developerTransferRemaining(job_id, user_id)
 				giveProjectReviewForDeveloper(job_id, user_id, description, rating, status)
 		else:
 			# Developer give review to client

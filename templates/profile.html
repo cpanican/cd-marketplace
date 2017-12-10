@@ -25,6 +25,9 @@
 	<p style="text-align: center">This user is not confirmed as a {{role}}</p>
 	{% endif %}
 	{% endif %}
+	{% if not warning == 0 %}
+	<p style="text-align: center"><strong>WARNING:</strong> You have a very low rating to project treshhold! ({{warning}})</p>
+	{% endif %}
 	<hr>
 	
 	<div class="row">

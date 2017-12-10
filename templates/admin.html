@@ -80,8 +80,10 @@
 					<h6 class="card-subtitle mb-2 text-muted">Client</h6>
 					{% endif %}
 					<p class="card-text">Email: {{ warn[1] }}</p>
-					<a href="/profile/{{ warn[4] }}" class="card-link">Profile Page</a>
-					<a href="#" class="card-link">Ban User</a>
+					<p class="card-text">Warnings: {{ warn[9] }}</p>
+					<a href="/profile/{{ warn[4] }}" class="card-link">Profile</a>
+					<a href="/admin/warn/{{ warn[4] }}" class="card-link">Warn User</a>
+					<a href="/admin/ban/{{ warn[4] }}" class="card-link">Ban User</a>
 				</div>
 			</div>
 		</div>

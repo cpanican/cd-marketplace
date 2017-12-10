@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block styles %}
+	{{ super () }}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/compose.css') }}" />
+{% endblock %}
+
+{% block scripts %}
+	{{ super() }}
+	<script type="text/javascript" src="{{ url_for('static', filename='scripts/compose.js') }}"></script>
+{% endblock %}
+
+{% block appcontent %}
+<br>
+<h1 style="text-align: center">Project Admin Feedback</h1>
+<br>
+{% if session.logged_in %}
+{% if session.role == 'a' %}
+<p style="text-align: center">This form will finalize the transaction between client end developer.</p>
+<p style="text-align: center">Please review the project before submitting this form.</p>
+<p style="text-align: center">As the admin, you can also make justifications on the ratings.</p>
+<p style="text-align: center">The project is located in <a href="/project/{{project_id}}">this link</a>.</p>
+<div class="container">
+	<div class="row">
+		<div class="container">
+			<br>
+			<form action="/admin/take_action/{{ project_id }}" method="POST">
+				<div class="form-group row">
+					<label for="inputDescription3" class="col-sm-2 col-form-label">Type how much % money will be given to developer</label>
+					<div class="col-sm-10">
+						<input type="number" class="form-control" name="money" min="0" max="100" placeholder="100% means developer will receive final price" required>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="inputFile3" class="col-sm-2 col-form-label">Developer Rating</label>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="drating" value="1">
+							1 star  
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="drating" value="2">
+							2 star  
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="drating" value="3">
+							3 star  
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="drating" value="4">
+							4 star  
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="drating" value="5">
+							5 star  
+						</label>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="inputFile3" class="col-sm-2 col-form-label">Client Rating</label>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="crating" value="1">
+							1 star  
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="crating" value="2">
+							2 star  
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="crating" value="3">
+							3 star  
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="crating" value="4">
+							4 star  
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="crating" value="5">
+							5 star  
+						</label>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="offset-sm-5 col-sm-7">
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% else %}
+<h3 style="text-align: center">You cannot access this page.</h3>
+{% endif %}
+
+
+{% else %}
+<h3 style="text-align: center">Please log-in</h3>
+{% endif %}
+
+{% endblock %}
