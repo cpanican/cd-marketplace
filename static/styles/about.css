@@ -6,12 +6,12 @@
     ),
     url(https://i.imgur.com/zeIdmzK.jpg);
     background-size: cover;
-  	height: 90vh;
+  	height: 85vh;
 }
 
 .header1{
 	position:absolute;
-	top:20%;
+	top:13vh;
 	transform:(-50%, -50%);
 	color:white;
 	text-align: center;
@@ -40,4 +40,49 @@ h1{
 
 #aboutlogin{
 	margin-left: 30px;
+}
+
+@media screen and (max-width: 655px) {
+    h1{
+	  	font-size: 40px;
+	}
+
+	#register_login{
+		margin: auto;
+		padding-top: 30px;
+		font-size:21px;
+	}
+
+	#aboutinfo{
+		margin: auto;
+		padding-top: 20px;
+		font-size:20px;
+	}
+
+	#aboutlogin{
+		margin-left: 0px;
+	}
+}
+
+
+@media screen and (max-width: 1000px) {
+    h1{
+	  	font-size: 40px;
+	}
+
+	#register_login{
+		margin: auto;
+		padding-top: 30px;
+		font-size:23px;
+	}
+
+	#aboutinfo{
+		margin: auto;
+		padding-top: 20px;
+		font-size:20px;
+	}
+
+	#aboutlogin{
+		margin-left: 0px;
+	}
 }

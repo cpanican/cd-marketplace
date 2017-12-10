@@ -43,8 +43,12 @@
 			<p><strong>Warnings</strong>: {{session.warning}}</p>
 
 			{% if client %}
+			{% if session.confirmed == 1 %}
 			<a href="/compose" class="btn btn-primary" role="button">Post a Bid</a>
 			<a href="/posting" class="btn btn-primary" role="button">See all Postings</a>
+			{% else %}
+			<a href="/posting" class="btn btn-primary" role="button">See all Postings</a>
+			{% endif %}
 			{% elif developer %}
 			<a href="/posting" class="btn btn-primary" role="button">See all Postings</a>
 			{% elif admin %}

@@ -28,6 +28,58 @@
 				<a href="/profile"><button class="btn btn-primary btn-lg">My Profile</button></a>
 			{% endif %}
 		</div>
+		
 	</header>
+	<br>
+	<div style="text-align: center">
+		<h1>Grand Website Statistics</h1>
+		<br>
+		<h4>Total number of registered users:</h4>
+		<p>{{ all_users }}</p>
+		<br>
+		<h4>Total number of clients:</h4>
+		<p>{{ all_clients }}</p>
+		<br>
+		<h4>Total number of developers:</h4>
+		<p>{{ all_devs }}</p>
+		<br>
+		<h4>Client(s) with most projects:</h4>
+		<br>
+		<div class="container center-block">
+			<div class="row text-center ">
+				{% for user1 in best_client %}
+				<div class="col">
+					<div id="card-padding">
+						<div class="card-block">
+							<a href="/profile/{{ user1[4] }}" style="color:black"><h5 class="card-title">{{ user1[6] }} {{ user1[7] }}</h5></a>
+							<p>Projects Finished: {{ user1[12] }}</p>
+							<a href="/profile/{{ user1[4] }}" class="btn btn-primary">View Profile</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+			<br>
+			<br>
+			<h4>Developer(s) making most money:</h4>
+			<br>
+			<div style="float:none" class="row text-center">
+				{% for user2 in best_dev %}
+				<div class="col">
+					<div id="card-padding">
+						<div class="card-block">
+							<a href="/profile/{{ user2[4] }}" style="color:black"><h5 class="card-title">{{ user2[6] }} {{ user2[7] }}</h5></a>
+							<p>Projects Finished: {{ user2[12] }}</p>
+							<a href="/profile/{{ user2[4] }}" class="btn btn-primary">View Profile</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+		<br>
+	</div>
+	<br>
+	
 
 {% endblock %}
