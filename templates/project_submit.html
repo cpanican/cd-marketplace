@@ -14,55 +14,26 @@
 <br>
 <h1 style="text-align: center">Submit Project</h1>
 <br>
+{% if session.logged_in %}
+{% if session.username == user_id %}
+<p style="text-align: center">You can submit a text submission and a post submission</p>
+<p style="text-align: center">Submitting a project will mark it 'Pending'. The client must confirm it first. </p>
+<p style="text-align: center">If the client isn't satisfied, an Admin will see if expectations were met.</p>
 <div class="container">
 	<div class="row">
 		<div class="container">
-		<p>You can submit a text submission or a post submission</p>
 		<br>
-		  <form action="/project/{{ job_id }}/submit" method="POST">
+		  <form action="/project/{{ job_id }}/submit/{{ user_id }}" method="POST">
 		    <div class="form-group row">
 		      <label for="inputDescription3" class="col-sm-2 col-form-label">Description</label>
 		      <div class="col-sm-10">
-		        <input type="text" class="form-control" name="description" placeholder="Description" required>
+		        <input type="text" class="form-control" name="description" maxlength="254" placeholder="Description" required>
 		      </div>
 		    </div>
 		    <div class="form-group row">
 		      <label for="inputFile3" class="col-sm-2 col-form-label">Upload Files</label>
 		      <div class="col-sm-10">
 		        <input type="file" class="form-control" name="file" placeholder="Deadline">
-		      </div>
-		    </div>
-		    <div class="form-group row">
-		      <label for="inputFile3" class="col-sm-2 col-form-label">Rating</label>
-		      <div class="form-check">
-		        <label class="form-check-label">
-		          <input class="form-check-input" type="radio" name="rating" value="1">
-		          1 star  
-		        </label>
-		      </div>
-		      <div class="form-check">
-		        <label class="form-check-label">
-		          <input class="form-check-input" type="radio" name="rating" value="2">
-		          2 star  
-		        </label>
-		      </div>
-		      <div class="form-check">
-		        <label class="form-check-label">
-		          <input class="form-check-input" type="radio" name="rating" value="3">
-		          3 star  
-		        </label>
-		      </div>
-		      <div class="form-check">
-		        <label class="form-check-label">
-		          <input class="form-check-input" type="radio" name="rating" value="4" checked>
-		          4 star  
-		        </label>
-		      </div>
-		      <div class="form-check">
-		        <label class="form-check-label">
-		          <input class="form-check-input" type="radio" name="rating" value="5">
-		          5 star  
-		        </label>
 		      </div>
 		    </div>
 		    
@@ -73,8 +44,16 @@
 		    </div>
 		  </form>
 		</div>
-		<h3>You are not part of this project.</h3>
 	</div>
 </div>
+
+{% else %}
+<h3 style="text-align: center">You are not part of this project.</h3>
+{% endif %}
+
+
+{% else %}
+<h3 style="text-align: center">Please log-in</h3>
+{% endif %}
 
 {% endblock %}

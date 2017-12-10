@@ -13,18 +13,14 @@
 {% block appcontent %}
 <br>
 <h1 style="text-align: center">Terminate Project</h1>
-<div class="container">
-	<div class="row">
-		<div class="container">
-		<p>As a client, terminating a project will give you a 1 star rating and an admin will determine how much to charge.</p>
-		<p>The amount of money depends on how much work the developer has done to the project.</p>
-		<br>
-			<form action="/project/{{ job_id }}/terminate" method="POST">
-				<button type="submit" class="btn btn-primary">Submit</button>
-			</form>
-		</div>
-		<h3>You are not part of this project.</h3>
-	</div>
-</div>
+<br>
+<p style="text-align: center">As a client, terminating a project will give you a 1 star rating and an admin will determine how much to charge.</p>
+<p style="text-align: center">The amount of money depends on how much work the developer has done to the project.</p>
+<br>
+<form style="text-align: center" action="/project/{{ job_id }}/terminate" method="POST">
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<h3 style="text-align: center">You are not part of this project.</h3>
+
 
 {% endblock %}

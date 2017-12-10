@@ -22,7 +22,8 @@
 	<h5>Project Days: {{ post[10] }} days</h5>
 	<h5>Project Price: ${{ project[2] }}</h5>
 	<h5>Status: {{ project[1] }}</h5>
-	<h5>Deadline: {{ }}
+	<h5>Created: {{ date[1] }}</h5>
+	<h5>Deadline: {{ date[2] }}
 	<hr>
 	<div class="row">
 		<div class="col-sm-4">
@@ -46,14 +47,24 @@
 		</div>
 	</div>
 	<hr>
+	<h3>Reviews:</h3>
+	<h4>Client Review:  <span>{{ project[14] }} stars</span></h4>
+	<p>{{ project[5] }}</p>
+	<br>
+	<h4>Developer Review:  <span>{{ project[15] }} stars</span></h4>
+	<p>{{ project[13] }}</p>
+	<hr>
 	{% if session.logged_in %}
 
 	{% if session.username == post[12] %}
 	{% if project[1] == 'Ongoing' %}
 	<h3>Actions:</h3>
-	<a href="/project/{{ post[0] }}/terminate" class="btn btn-primary">Terminate Project</a>
+	<a href="/project/{{ post[0] }}/terminate/{{ post[12] }}" class="btn btn-primary">Terminate Project</a>
 	{% else %}
-	<a href="" class="btn btn-primary">Submit Review to Developer</a>
+	<h3>Actions:</h3>
+	{% if not project[14] %}
+	<a href="/project/{{ post[0] }}/review/{{ project[10] }}" class="btn btn-primary">Submit Review to Developer</a>
+	{% endif %}
 	{% endif %}
 	{% endif %}
 
@@ -61,9 +72,11 @@
 	{% if (session.role == 'd') and (session.username == project[10]) %}
 	<h3>Actions:</h3>
 	{% if project[1] == 'Ongoing' %}
-	<a href="/project/{{ post[0] }}/submit" class="btn btn-primary">Make a Submission</a>
+	<a href="/project/{{ post[0] }}/submit/{{ project[10] }}" class="btn btn-primary">Make a Submission</a>
 	{% else %}
-	<a href="" class="btn btn-primary">Submit Review to Client</a>
+	{% if not project[15] == 'None' %}
+	<a href="/project/{{ post[0] }}/review/{{ post[12] }}" class="btn btn-primary">Submit Review to Client</a>
+	{% endif %}
 	{% endif %}
 	{% endif %}
 

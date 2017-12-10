@@ -13,7 +13,7 @@ conn = pymysql.connect(host='localhost', port=3306, user='root', password='passw
 cur = conn.cursor()
 
 
-# Functions to write
+################################################################ LOGIN REGISTER FUNCTIONS ################################################################
 # Checks if user is on database. Used in login
 def checkLogin(username, password):
 	query = "SELECT * FROM users WHERE username LIKE '{}' AND password LIKE '{}'".format(username, password)
@@ -128,7 +128,7 @@ def showActiveBidsClient(user_id):
 
 # Show all current projects for developer
 def showActiveProjectsDev(user_id):
-	query = "SELECT project.job_id, title, project_days, status, final_price, deadline, post_date FROM project JOIN post ON project.job_id = post.job_id WHERE project.dev_id = {} AND status = 'Ongoing'".format(user_id)
+	query = "SELECT project.job_id, title, project_days, status, final_price, deadline, post_date FROM project JOIN post ON project.job_id = post.job_id WHERE project.dev_id = {} AND status = 'Ongoing' OR status = 'Pending'".format(user_id)
 	cur.execute(query)
 	data = cur.fetchall()
 	return data
@@ -136,7 +136,7 @@ def showActiveProjectsDev(user_id):
 
 # Show all current projects
 def showActiveProjectsClient(user_id):
-	query = "SELECT project.job_id, title, project_days, status, final_price, deadline, post_date FROM project JOIN post ON project.job_id = post.job_id WHERE project.client_id = {} AND status = 'Ongoing'".format(user_id)
+	query = "SELECT project.job_id, title, project_days, status, final_price, deadline, post_date FROM project JOIN post ON project.job_id = post.job_id WHERE project.client_id = {} AND status = 'Ongoing' OR status = 'Pending'".format(user_id)
 	cur.execute(query)
 	data = cur.fetchall()
 	return data
@@ -179,7 +179,7 @@ def postBid(title, description, start_price, deadline, file, visibility, user_id
 
 # Show all posts newest first on postings page
 def showPosts():
-	query = "SELECT job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id WHERE NOT EXISTS (SELECT job_id FROM project WHERE post.job_id = project.job_id) ORDER BY post_date DESC"
+	query = "SELECT job_id, proj_description, start_price, date(deadline), post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id WHERE NOT EXISTS (SELECT job_id FROM project WHERE post.job_id = project.job_id) ORDER BY post_date DESC"
 	cur.execute(query)
 	data = cur.fetchall()
 	return data
@@ -195,7 +195,7 @@ def showOnePost(job_id):
 
 # Show post with title as parameter
 def showLatestPostByClient(client_id):
-	query = "SELECT job_id, proj_description, start_price, deadline, post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id WHERE client_id = {} ORDER BY post_date DESC LIMIT 1".format(client_id)
+	query = "SELECT job_id, proj_description, start_price, date(deadline), post_date, dev_id, client_id, title, file, visibility, project_days, email, username, first_name, last_name, bids, clicks FROM post JOIN users ON post.client_id = users.user_id WHERE client_id = {} ORDER BY post_date DESC LIMIT 1".format(client_id)
 	cur.execute(query)
 	data = cur.fetchone()
 	return data
@@ -295,7 +295,7 @@ def adminUnconfirmed():
 
 # Return projects with reports
 def adminProjReport():
-	query = "SELECT * FROM project WHERE client_rating < 3"
+	query = "SELECT project.job_id, title, dev_rating_desc, dev_rating FROM project JOIN post ON project.job_id = post.job_id WHERE status = 'Admin Review'"
 	cur.execute(query)
 	data = cur.fetchall()
 	print("All reported projects loaded")
@@ -305,7 +305,7 @@ def adminProjReport():
 
 # Return users in warning
 def adminWarning():
-	query = "SELECT * FROM users JOIN blacklist ON blacklist.user_id != users.user_id WHERE confirmed != 1 AND role != 'a' AND rating < 3 AND finished_projects >= 5"
+	query = "SELECT * FROM users JOIN blacklist ON blacklist.user_id != users.user_id WHERE confirmed != 1 AND role != 'a' AND rating < 15 AND finished_projects >= 5"
 	cur.execute(query)
 	data = cur.fetchall()
 	print("All warned users loaded")
@@ -360,22 +360,28 @@ def withdrawMoney(username, amount):
 ############################################################################################################################################
 ######################## Functions for project creation and submission #########################
 def allProjects():
-	query = "SELECT project.job_id, title, status, final_price, u1.first_name, u1.last_name, u2.first_name, u2.last_name FROM project JOIN users u1 ON project.dev_id = u1.user_id JOIN users u2 ON project.client_id = u2.user_id JOIN post ON project.job_id = post.job_id WHERE status = 'Ongoing'"
+	query = "SELECT project.job_id, title, status, final_price, u1.first_name, u1.last_name, u2.first_name, u2.last_name FROM project JOIN users u1 ON project.dev_id = u1.user_id JOIN users u2 ON project.client_id = u2.user_id JOIN post ON project.job_id = post.job_id WHERE status = 'Ongoing' OR status = 'Pending'"
 	cur.execute(query)
 	data = cur.fetchall()
 	return data
 
 
-def createProject(job_id, dev_id, client_id, price):
+def createProject(job_id, dev_id, client_id, price, project_days):
 	query = "INSERT INTO project (job_id, status, final_price, dev_id, client_id) VALUES ({}, 'Ongoing', {}, {}, {})".format(job_id, price, dev_id, client_id)
 	cur.execute(query)
 	query1 = "UPDATE post SET dev_id = {} WHERE job_id = {}".format(dev_id, job_id)
 	cur.execute(query1)
+	query2 = "SET SQL_SAFE_UPDATES = 0"
+	cur.execute(query2)
+	query3 = "UPDATE project SET due_date = DATE_ADD(due_date, INTERVAL {} DAY) WHERE job_id = {}".format(project_days, job_id)
+	cur.execute(query3)
+	query4 = "SET SQL_SAFE_UPDATES = 1"
+	cur.execute(query4)
 	print("project created")
 	return True
 
 def findProjectAndDev(job_id):
-	query = "SELECT job_id, status, final_price, dev_id, client_id, dev_rating_desc, client_id, submit_text, submit_file, user_id, username, first_name, last_name FROM project JOIN users ON project.dev_id = users.user_id WHERE job_id = {}".format(job_id)
+	query = "SELECT job_id, status, final_price, dev_id, client_id, dev_rating_desc, client_id, submit_text, submit_file, user_id, username, first_name, last_name, client_rating_desc, dev_rating, client_rating FROM project JOIN users ON project.dev_id = users.user_id WHERE job_id = {}".format(job_id)
 	cur.execute(query)
 	data = cur.fetchone()
 	return data
@@ -386,10 +392,43 @@ def findProjectDueDate(job_id):
 	data = cur.fetchone()
 	return data
 
-def submitProject(job_id):
-	query = "UPDATE project SET status = 'Complete' WHERE job_id = {}".format(job_id)
-	cur.execute(query)
+def submitProject(job_id, dev_id, description, file):
+	query1 = "SET SQL_SAFE_UPDATES = 0"
+	cur.execute(query1)
+	query2 = "UPDATE project SET status = 'Pending', submit_text = '{}', submit_file = '{}' WHERE job_id = {}".format(description, file, job_id)
+	cur.execute(query2)
+	query3 = "SET SQL_SAFE_UPDATES = 1"
+	cur.execute(query3)
 	return True
+
+
+# From client to developer review
+def giveProjectReviewForDeveloper(job_id, user_id, description, rating, status):
+	query1 = "SET SQL_SAFE_UPDATES = 0"
+	cur.execute(query1)
+	query2 = "UPDATE project SET status = '{}', dev_rating = {}, dev_rating_desc = '{}' WHERE job_id = {}".format(status, rating, description, job_id)
+	cur.execute(query2)
+	query3 = "UPDATE users SET rating = rating + {}, finished_projects = finished_projects + 1 WHERE user_id = {}".format(rating, user_id)
+	cur.execute(query3)
+	query4 = "SET SQL_SAFE_UPDATES = 1"
+	cur.execute(query4)
+	return True
+
+
+
+# From developer to client review
+def giveProjectReviewForClient(job_id, user_id, description, rating):
+	query1 = "SET SQL_SAFE_UPDATES = 0"
+	cur.execute(query1)
+	query2 = "UPDATE project SET client_rating = {}, client_rating_desc = '{}' WHERE job_id = {}".format(rating, description, job_id)
+	cur.execute(query2)
+	query3 = "UPDATE users SET rating = rating + {}, finished_projects = finished_projects + 1 WHERE user_id = {}".format(rating, user_id)
+	cur.execute(query3)
+	query4 = "SET SQL_SAFE_UPDATES = 1"
+	cur.execute(query4)
+	return True
+
+
 
 
 # Routes
@@ -425,7 +464,7 @@ def login():
 			session['role'] = getUser(username)[2]
 			session['first_name'] = getUser(username)[3]
 			session['last_name'] = getUser(username)[4]
-			session['rating'] = getUser(username)[5]
+			rating = getUser(username)[5]
 			session['warning'] = getUser(username)[6]
 			session['description'] = getUser(username)[7]
 			session['confirmed'] = getUser(username)[8]
@@ -435,6 +474,10 @@ def login():
 			session['business_credential'] = getUser(username)[12]
 			session['balance'] = getUser(username)[13]
 			session['logged_in'] = True
+			if not session['finished_projects'] == 0:
+				session['rating'] = rating / session['finished_projects']
+			else:
+				session['rating'] = 0.0
 			if checkBlacklist(username):
 				data = getBlacklist(username)
 				session['logged_in'] = False
@@ -545,6 +588,10 @@ def profile(username):
 	interest = getUser(username)[10]
 	sample_work = getUser(username)[11]
 	business_credential = getUser(username)[12]
+	if not finished_projects == 0:
+		true_rating = rating / finished_projects
+	else:
+		true_rating = 0.0
 	if confirmed != 0:
 		confirmed_user = True
 	elif confirmed == 0:
@@ -567,7 +614,7 @@ def profile(username):
 		history = ''
 
 
-	return render_template("profile.html", email=email, role=role, first_name=first_name, last_name=last_name, rating=rating, warning=warning, description=description, confirmed=confirmed_user, finished_projects=finished_projects, interest=interest, sample_work=sample_work, business_credential=business_credential, active_bids=active_bids, curr_projects=curr_projects, history=history)
+	return render_template("profile.html", email=email, role=role, first_name=first_name, last_name=last_name, rating=true_rating, warning=warning, description=description, confirmed=confirmed_user, finished_projects=finished_projects, interest=interest, sample_work=sample_work, business_credential=business_credential, active_bids=active_bids, curr_projects=curr_projects, history=history)
 
 
 # compose page
@@ -667,6 +714,15 @@ def admin_unban(user_id):
 		return redirect(url_for('admin_users'))
 
 
+# admin: review project report
+@app.route('/admin/take_action/<project_id>', methods=['GET', 'POST'])
+def admin_takeaction(project_id):
+	if request.method == 'POST':
+		return redirect(url_for('admin'))
+	else:
+		return render_template('admin_takeaction.html', project_id=project_id)
+
+
 # about page
 @app.route('/about')
 def about():
@@ -714,33 +770,36 @@ def project(job_id):
 	post = showOnePost(job_id)
 	# job_id, status, final_price, dev_id, client_id, dev_rating_desc, client_id, submit_text, submit_file, user_id, username, first_name, last_name
 	project = findProjectAndDev(job_id)
-	return render_template('project.html', post=post, project=project)
+	dates = findProjectDueDate(job_id)
+	return render_template('project.html', post=post, project=project, date=dates)
 
 
 # create a project and choose a developer if youre a client
-@app.route('/project/<job_id>/<dev_name>/<price>', methods=['GET', 'POST'])
-def projectCreate(job_id, dev_name, price):
+@app.route('/project/<job_id>/<dev_name>/<price>/<project_days>', methods=['GET', 'POST'])
+def projectCreate(job_id, dev_name, price, project_days):
 	client_id = session['user_id']
 	dev_id = getUser(dev_name)[0]
-	createProject(job_id, dev_id, client_id, price)
+	createProject(job_id, dev_id, client_id, price, project_days)
 	return redirect(url_for('project', job_id=job_id))
 
 
 # developer: submit a project
-@app.route('/project/<job_id>/submit')
-def projectSubmit(job_id):
+@app.route('/project/<job_id>/submit/<dev_id>', methods=['GET', 'POST'])
+def projectSubmit(job_id, dev_id):
 	if request.method == 'POST':
 		description = request.form['description']
 		file = request.form['file']
-		# do some stuff on database
-		return render_template('project_submit.html', job_id=job_id)
+		description = description.replace("'", "''")
+		submitProject(job_id, dev_id, description, file)
+
+		return redirect(url_for('project', job_id=job_id))
 	else:
-		return render_template('project_submit.html', job_id=job_id)
+		return render_template('project_submit.html', job_id=job_id, user_id=dev_id)
 
 
 # client: terminate a project
-@app.route('/project/<job_id>/terminate')
-def projectTerminate(job_id):
+@app.route('/project/<job_id>/terminate/<client_id>', methods=['GET','POST'])
+def projectTerminate(job_id, client_id):
 	if request.method == 'POST':
 		# terminate project and do some stuff on database
 		return render_template('project_terminate.html', job_id=job_id)
@@ -748,8 +807,33 @@ def projectTerminate(job_id):
 		return render_template('project_terminate.html', job_id=job_id)
 
 
+# Submit a review
+@app.route('/project/<job_id>/review/<username>', methods=['GET','POST'])
+def projectReview(job_id, username):
+	if request.method == 'POST':
+		description = request.form['description']
+		rating = int(request.form['rating'])
+		role = session['role']
+		print(role)
+		user_id = getUser(username)[0]
+		if role == 'c':
+			if rating < 3:
+				status = 'Admin Review'
+				# Client will give a review to developer
+				giveProjectReviewForDeveloper(job_id, user_id, description, rating, status)
+			else:
+				status = 'Completed'
+				giveProjectReviewForDeveloper(job_id, user_id, description, rating, status)
+		else:
+			# Developer give review to client
+			giveProjectReviewForClient(job_id, user_id, description, rating)
+		return redirect(url_for('project', job_id=job_id))
+	else:
+		return render_template('project_rating.html', job_id=job_id, username=username)
+
+
 # edit profile
-@app.route('/edit-profile' , methods=['GET','POST'])
+@app.route('/edit-profile', methods=['GET','POST'])
 def edit_profile():
 	print("edit-profile Page")
 	error = None

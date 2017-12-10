@@ -52,10 +52,11 @@
 		<div class="col-sm-3">
 			<div class="card">
 				<div class="card-block">
-					<h4 class="card-title">Client Rating: {{ report[6] }}</h4>
-					<p class="card-text">Message: {{ report[5] }} </p>
-					<a href="/posting/{{ report[0] }}" class="card-link">Review Project</a>
-					<a href="#" class="card-link">Take Action</a>
+					<a href="/project/{{ report[0] }}"><h4 class="card-title">{{ report[1] }}</h4></a>
+					<p class="card-text">Message: {{ report[2] }} </p>
+					<p class="card-text">Rating: {{ report[3] }}</p>
+					<a href="/project/{{ report[0] }}" class="card-link">Review Project</a>
+					<a href="/admin/take_action/{{ report[0] }}" class="card-link">Take Action</a>
 				</div>
 			</div>
 		</div>
