@@ -9,8 +9,8 @@ app.secret_key = 'somerandomtext'
 # connect to database
 # conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace',
 #                        autocommit=True)
-conn = pymysql.connect(host='us-cdbr-iron-east-05.cleardb.net', user='be82a2766fa243', password='a9c769dc',
-                       db='heroku_20ea27a3cb327b3', autocommit=True, connect_timeout=2147483)
+conn = pymysql.connect(host='us-cdbr-iron-east-05.cleardb.net', user='b64f96eb9600a6', password='14fe566b',
+                       db='heroku_ca977ac61a4125c', autocommit=True, connect_timeout=2147483)
 cur = conn.cursor()
 
 
