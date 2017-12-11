@@ -634,24 +634,26 @@ def login():
         username = request.form['username']
         password = request.form['password']
         if checkLogin(username, password):
+            data = getUser(username)
             session['username'] = username
-            session['user_id'] = getUser(username)[0]
-            session['email'] = getUser(username)[1]
-            session['role'] = getUser(username)[2]
-            session['first_name'] = getUser(username)[3]
-            session['last_name'] = getUser(username)[4]
-            rating = getUser(username)[5]
-            session['warning'] = getUser(username)[6]
-            session['description'] = getUser(username)[7]
-            session['confirmed'] = getUser(username)[8]
-            session['finished_projects'] = getUser(username)[9]
-            session['interest'] = getUser(username)[10]
-            session['sample_work'] = getUser(username)[11]
-            session['business_credential'] = getUser(username)[12]
-            session['balance'] = getUser(username)[13]
+            session['user_id'] = data[0]
+            session['email'] = data[1]
+            session['role'] = data[2]
+            session['first_name'] = data[3]
+            session['last_name'] = data[4]
+            rating = data[5]
+            session['warning'] = data[6]
+            session['description'] = data[7]
+            session['confirmed'] = data[8]
+            session['finished_projects'] = data[9]
+            session['interest'] = data[10]
+            session['sample_work'] = data[11]
+            session['business_credential'] = data[12]
+            session['balance'] = data[13]
             session['logged_in'] = True
             if not session['finished_projects'] == 0:
                 session['rating'] = rating / session['finished_projects']
+                session['rating'] = round(session['rating'], 2)
             else:
                 session['rating'] = 0.0
             if checkBlacklist(username):
@@ -700,7 +702,8 @@ def dashboard():
     isValidUser = False
     if session['logged_in']:
         isValidUser = True
-        user_id = getUser(session['username'])[0]
+        data = getUser(session['username'])
+        user_id = data[0]
         if session['role'] == 'd':
             role = 'Developer'
             active_bids = showActiveBidsDev(user_id)
@@ -721,13 +724,14 @@ def dashboard():
         elif session['confirmed'] == 0:
             confirmed_user = False
 
-        session['description'] = getUser(session['username'])[7]
-        session['confirmed'] = getUser(session['username'])[8]
-        session['finished_projects'] = getUser(session['username'])[9]
-        session['interest'] = getUser(session['username'])[10]
-        session['sample_work'] = getUser(session['username'])[11]
-        session['business_credential'] = getUser(session['username'])[12]
-        session['balance'] = getUser(session['username'])[13]
+        session['description'] = data[7]
+        session['confirmed'] = data[8]
+        session['finished_projects'] = data[9]
+        session['interest'] = data[10]
+        session['sample_work'] = data[11]
+        session['business_credential'] = data[12]
+        session['balance'] = data[13]
+        session['balance'] = round(session['balance'], 2)
 
         if role == 'Client':
             return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role,
@@ -753,21 +757,22 @@ def profile_redirect():
 # show profile
 @app.route('/profile/<username>', methods=['GET'])
 def profile(username):
-    user_id = getUser(username)[0]
-    email = getUser(username)[1]
-    role = getUser(username)[2]
-    first_name = getUser(username)[3]
-    last_name = getUser(username)[4]
-    rating = getUser(username)[5]
-    warning = getUser(username)[6]
-    description = getUser(username)[7]
-    confirmed = getUser(username)[8]
-    finished_projects = getUser(username)[9]
-    interest = getUser(username)[10]
-    sample_work = getUser(username)[11]
-    business_credential = getUser(username)[12]
+    data = getUser(username)
+    user_id = data[0]
+    email = data[1]
+    role = data[2]
+    first_name = data[3]
+    last_name = data[4]
+    rating = data[5]
+    warning = data[6]
+    description = data[7]
+    confirmed = data[8]
+    finished_projects = data[9]
+    interest = data[10]
+    sample_work = data[11]
+    business_credential = data[12]
     if not finished_projects == 0:
-        true_rating = rating / finished_projects
+        true_rating = round((rating / finished_projects),2)
     else:
         true_rating = 0.0
     if confirmed != 0:
@@ -905,11 +910,12 @@ def admin_takeaction(project_id):
         money = request.form['money']
         dev_rating = request.form['drating']
         client_rating = request.form['crating']
-        old_dev_rating = findProject(project_id)[9]
-        old_client_rating = findProject(project_id)[6]
-        dev_id = findProject(project_id)[3]
-        client_id = findProject(project_id)[4]
-        price = findProject(project_id)[2]
+        data = findProject(project_id)
+        old_dev_rating = data[9]
+        old_client_rating = data[6]
+        dev_id = data[3]
+        client_id = data[4]
+        price = data[2]
         adminTakeAction(project_id, dev_rating, client_rating, old_dev_rating, old_client_rating, dev_id, client_id, money, price)
         session['balance'] = getUser(session['username'])[13]
         return redirect(url_for('admin'))
@@ -974,7 +980,6 @@ def allProject():
 @app.route('/project/<job_id>')
 def project(job_id):
     post = showOnePost(job_id)
-    # job_id, status, final_price, dev_id, client_id, dev_rating_desc, client_id, submit_text, submit_file, user_id, username, first_name, last_name
     project = findProjectAndDev(job_id)
     dates = findProjectDueDate(job_id)
     return render_template('project.html', post=post, project=project, date=dates)
