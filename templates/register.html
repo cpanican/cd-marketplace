@@ -3,6 +3,7 @@
 {% block styles %}
 	{{ super () }}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/register.css') }}" />
+	<title>Register</title>
 {% endblock %}
 
 {% block scripts %}
@@ -26,20 +27,21 @@
 		    </li>
 			<li>
 		        <label>Username <span class="required">*</span></label>
-		        <input type="text" name="username" class="field-long" required/>
+		        <input type="text" name="username" minlength="4" class="field-long" required/>
 		    </li>
 		    <li>
 		        <label>Password <span class="required">*</span></label>
-		        <input type="password" name="password" class="field-long" required/>
+		        <input type="password" name="password" minlength="8" class="field-long" required/>
 		    </li>
 		    <li>
 		        <label>Confirm Password <span class="required">*</span></label>
-		        <input type="password" name="confirm-password" class="field-long" required/>
+		        <input type="password" name="confirm-password" minlength="8" class="field-long" required/>
 		    </li>
 		    <li>
 		        <label>Email <span class="required">*</span></label>
 		        <input type="text" name="email" class="field-long" required/>
 		    </li>
+		    <br>
 	    	<label><input type="radio" name="role" value="c" required> I am a client.</label>
 			<label><input type="radio" name="role" value="d" required> I am a developer.</label>
 		    <li>
@@ -49,16 +51,16 @@
 	</form>
 	<br>
 	{% if password %}
-	<div>
+	<div style="text-align: center">
 		<h4>Passwords are not the same!</h4>
 	</div>
 	{% endif %}
 	{% if success %}
-	<div>
+	<div style="text-align: center">
 		<h4>You successfully created an account! You can now sign in.</h4>
 	</div>
 	{% elif user %}
-	<div>
+	<div style="text-align: center">
 		<h4>Username/email already exists! Please try again.</h4>
 	</div>
 	{% else %}

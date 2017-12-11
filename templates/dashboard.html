@@ -3,6 +3,7 @@
 {% block styles %}
     {{ super () }}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/profile.css') }}" />
+	<title>Dashboard</title>
 {% endblock %}
 
 {% block scripts %}
@@ -15,7 +16,7 @@
 	{% if isValidUser %}
 	<br>
 	<h1 style="text-align: center">Dashboard</h1>
-	<br>
+	<hr>
 	<h2 style="text-align: center">Hello, {{session.first_name}} {{session.last_name}}</h2>
 	{% if confirmed %}
 	<p style="text-align: center">You are confirmed as a {{role}}</p>
@@ -29,10 +30,10 @@
 	<hr>
 
 	<div class="row">
-		<div class="col col-md-5">
-			<img id="picture" src="http://i0.kym-cdn.com/photos/images/facebook/000/839/199/8a9.jpg">
+		<div id="image-style" class="col col-md-5 col-sm-12 col-12">
+			<img id="picture" class="img-fluid" src="http://i0.kym-cdn.com/photos/images/facebook/000/839/199/8a9.jpg">
 		</div>
-		<div class="col col-md-7">
+		<div class="col col-md-7 col-sm-12 col-12">
 			<h2>Your Dashboard Summary</h2>
 			<p><strong>Description</strong>: {{session.description}}</p>
 			<p><strong>Interest</strong>: {{session.interest}}</p>
@@ -65,7 +66,7 @@
 			<div class="row text-center">
 				{% if role == 'Developer' %}
 				{% for bids in active_bids %}
-				<div class="col col-md-4">
+				<div class="col col-md-4 col-sm-12 col-12">
 					<div id="card-padding" class="card">
 						<div class="card-block">
 							<a href="/posting/{{ bids[0] }}" style="color:black"><h4 class="card-title">{{ bids[3] }}</h4></a>
@@ -79,7 +80,7 @@
 				{% endfor %}
 				{% elif role == 'Client' %}
 				{% for bids in active_bids %}
-				<div class="col col-md-4">
+				<div class="col col-md-4 col-sm-12 col-12">
 					<div id="card-padding" class="card">
 						<div class="card-block">
 							<a href="/posting/{{ bids[0] }}" style="color:black"><h4 class="card-title">{{ bids[2] }}</h4></a>
@@ -105,7 +106,7 @@
 		{% if curr_projects %}
 			<div class="row text-center">
 				{% for project in curr_projects %}
-				<div class="col col-md-4">
+				<div class="col col-md-4 col-sm-12 col-12">
 					<div id="card-padding" class="card">
 						<div class="card-block">
 							<a href="/project/{{ project[0] }}" style="color:black"><h4 class="card-title">{{ project[1] }}</h4></a>
@@ -129,7 +130,7 @@
 		{% if history %}
 			<div class="row text-center">
 				{% for hist in history %}
-				<div class="col col-md-4">
+				<div class="col col-md-4 col-sm-12 col-12">
 					<div id="card-padding" class="card">
 						<div class="card-block">
 							<a href="/project/{{ hist[0] }}" style="color:black"><h4 class="card-title">{{ hist[1] }}</h4></a>

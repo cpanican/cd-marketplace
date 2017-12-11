@@ -42,21 +42,65 @@ h1{
 	margin-left: 30px;
 }
 
-@media screen and (max-width: 655px) {
+@media screen and (max-width: 993px) {
     h1{
 	  	font-size: 40px;
+	}
+	.header1{
+		position:relative;
+		top:13vh;
+		transform:(0%, 0%);
+		color:white;
+		text-align: center;
 	}
 
 	#register_login{
 		margin: auto;
 		padding-top: 30px;
-		font-size:21px;
+		font-size:23px;
+		padding-left: 00%;
+		padding-right: 00%;
 	}
 
 	#aboutinfo{
 		margin: auto;
 		padding-top: 20px;
 		font-size:20px;
+		padding-left: 00%;
+		padding-right: 00%;
+	}
+
+	#aboutlogin{
+		margin-left: 0px;
+	}
+}
+
+@media screen and (max-width: 655px) {
+    h1{
+	  	font-size: 40px;
+	}
+	.header1{
+		position:absolute;
+		top:13vh;
+		transform:(-50%, -50%);
+		color:white;
+		text-align: center;
+	}
+
+	#register_login{
+		margin: auto;
+		padding-top: 30px;
+		font-size:21px;
+		padding-left: 00%;
+		padding-right: 00%;
+	}
+
+	#aboutinfo{
+		margin: auto;
+		padding-top: 20px;
+		font-size:20px;
+		padding-left: 00%;
+		padding-right: 00%;
 	}
 
 	#aboutlogin{
@@ -65,20 +109,26 @@ h1{
 }
 
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 528px) {
     h1{
 	  	font-size: 40px;
+	}
+	.header1{
+		position:absolute;
+		top:10vh;
+		color:white;
+		text-align: center;
 	}
 
 	#register_login{
 		margin: auto;
-		padding-top: 30px;
-		font-size:23px;
+		padding-top: 20px;
+		font-size:21px;
 	}
 
 	#aboutinfo{
 		margin: auto;
-		padding-top: 20px;
+		padding-top: 10px;
 		font-size:20px;
 	}
 

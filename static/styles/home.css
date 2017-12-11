@@ -74,10 +74,44 @@ i {
   padding-top: 4vh;
 }
 
+.card {
+  margin-bottom: 10px;
+}
+
 .card-block {
   padding: 10px;
 }
 
 #trending-section {
   padding: 20px 0px 20px 0px;
+}
+
+@media screen and (max-width: 992px) {
+
+}
+
+@media screen and (max-width: 600px) {
+  #hero-text {
+    position: relative;
+    text-align: center;
+    top: 20vh;
+  }
+
+  #text-after-hero {
+    margin-top: 55vh;
+    padding-bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 348px) {
+  #hero-text {
+    position: relative;
+    text-align: center;
+    top: 20vh;
+  }
+
+  #text-after-hero {
+    margin-top: 48vh;
+    padding-bottom: 20px;
+  }
 }

@@ -2,12 +2,13 @@
 
 {% block styles %}
 	{{ super () }}
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/project.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/post.css') }}" />
+	<title>Bid: {{ post[7] }}</title>
 {% endblock %}
 
 {% block scripts %}
 	{{ super() }}
-	<script type="text/javascript" src="{{ url_for('static', filename='scripts/project.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='scripts/post.js') }}"></script>
 {% endblock %}
 
 {% block appcontent %}
@@ -26,6 +27,7 @@
 	<br>
 	<h2>Title: {{ post[7] }}</h2>
 	<h3>Author: <a href="/profile/{{ post[12] }}">{{ post[13] }} {{ post[14] }}</h3></a>
+	<hr>
 	<h4>Description</h4>
 	<p>{{ post[1] }}</p>
 	<h5>Project Days: {{ post[10] }} days</h5>

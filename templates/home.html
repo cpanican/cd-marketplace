@@ -74,7 +74,7 @@
 		<p class="text-center">These are the current trending bids.</p>
 		<div class="row text-center">
 			{% for bid in bids %}
-			<div class="col col-md-4">
+			<div class="col col-md-4 col-sm-12 col-12">
 				<div class="card">
 					<div class="card-block">
 						<h3 class="card-title">{{ bid[7] }}</h3>
@@ -97,7 +97,7 @@
 		<p class="text-center">These are the most high rated clients with the most posts completed.</p>
 		<div class="row text-center">
 			{% for client in clients %}
-			<div class="col col-md-4">
+			<div class="col col-md-4 col-sm-12  col-12">
 				<div class="card">
 					<div class="card-block">
 						<h3 class="card-title">{{ client[6] }} {{ client[7] }}</h3>
@@ -116,7 +116,7 @@
 		<p class="text-center">These are the most high rated developers with the most projects completed</p>
 		<div class="row text-center">
 			{% for dev in devs %}
-			<div class="col col-md-4">
+			<div class="col col-md-4 col-sm-12 col-12">
 				<div class="card">
 					<div class="card-block">
 						<h3 class="card-title">{{ dev[6] }} {{ dev[7] }}</h3>

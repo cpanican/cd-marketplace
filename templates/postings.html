@@ -3,6 +3,7 @@
 {% block styles %}
 	{{ super () }}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/postings.css') }}" />
+	<title>All Postings</title>
 {% endblock %}
 
 {% block scripts %}
@@ -26,7 +27,7 @@
 			<hr>			
 			<div class="row text-center">
 				{% for post in posts %}
-				<div class="col col-md-4">
+				<div class="col col-md-4 col-sm-12 col-12">
 					<div id="card-padding" class="card">
 						<div class="card-block">
 							<a href="/posting/{{ post[0] }}" style="color:black"><h4 class="card-title">{{ post[7] }}</h4></a>
