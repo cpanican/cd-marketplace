@@ -1,6 +1,6 @@
 #hero-background {
   width: 100%;
-  height: 85vh;
+  height: 800px;
   background: linear-gradient(230deg, yellow, purple, darkblue, purple, yellow);
   background-size: 400% 400%;
   -webkit-animation: Gradient 15s ease infinite;
@@ -35,7 +35,7 @@
 #hero-text {
   position: relative;
   text-align: center;
-  top: 28vh;
+  top: 270px;
 }
 
 #hero-text h1 {
@@ -49,7 +49,7 @@
 }
 
 #text-after-hero {
-  margin-top: 66vh;
+  margin-top: 570px;
   padding-bottom: 20px;
 }
 
@@ -64,7 +64,7 @@ i {
 #fp-background-1 {
   background-color: #2F4F4F;
   width: 100%;
-  height: 30vh;
+  height: 300px;
 }
 
 #big-text-1 {
@@ -86,32 +86,41 @@ i {
   padding: 20px 0px 20px 0px;
 }
 
-@media screen and (max-width: 992px) {
-
-}
-
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 460px) {
   #hero-text {
     position: relative;
     text-align: center;
-    top: 20vh;
+    top: 190px;
   }
 
   #text-after-hero {
-    margin-top: 55vh;
+    margin-top: 500px;
     padding-bottom: 20px;
   }
 }
 
-@media screen and (max-width: 348px) {
+@media screen and (max-width: 360px) {
   #hero-text {
     position: relative;
     text-align: center;
-    top: 20vh;
+    top: 180px;
   }
 
   #text-after-hero {
-    margin-top: 48vh;
+    margin-top: 530px;
+    padding-bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  #hero-text {
+    position: relative;
+    text-align: center;
+    top: 180px;
+  }
+
+  #text-after-hero {
+    margin-top: 500px;
     padding-bottom: 20px;
   }
 }
