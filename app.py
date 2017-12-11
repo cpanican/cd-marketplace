@@ -7,10 +7,10 @@ app = Flask(__name__)
 app.secret_key = 'somerandomtext'
 
 # connect to database
-conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace',
-                       autocommit=True)
-# conn = pymysql.connect(host='us-cdbr-iron-east-05.cleardb.net', user='ba269511c15654', password='bafb1cdd',
-#                        db='heroku_13d3dee5aa34929', autocommit=True)
+# conn = pymysql.connect(host='localhost', port=3306, user='root', password='password', db='cd-marketplace',
+#                        autocommit=True)
+conn = pymysql.connect(host='us-cdbr-iron-east-05.cleardb.net', user='ba269511c15654', password='bafb1cdd',
+                       db='heroku_13d3dee5aa34929', autocommit=True)
 cur = conn.cursor()
 
 
@@ -20,7 +20,6 @@ def checkLogin(username, password):
     query1 = "SET SQL_SAFE_UPDATES = 0"
     cur.execute(query1)
     query = "SELECT * FROM users WHERE username LIKE '{}' AND password LIKE '{}'".format(username, password)
-    print(bool(cur.execute(query)))
     if cur.execute(query):
         return True
     else:
@@ -30,16 +29,15 @@ def checkLogin(username, password):
 # Check if username has a duplicate. Used for registration
 def checkUser(username):
     query = "SELECT * FROM users WHERE username LIKE '{}'".format(username)
-    print(bool(cur.execute(query)))
     if cur.execute(query):
         return True
     else:
         return False
 
 
+# Check if email has a duplicate. Used for registration
 def checkEmail(email):
     query = "SELECT * FROM users WHERE email LIKE '{}'".format(email)
-    print(bool(cur.execute(query)))
     if cur.execute(query):
         return True
     else:
@@ -55,6 +53,7 @@ def getUser(username):
     return data
 
 
+# Returns user with the user of user_id as input
 def getUserById(user_id):
     query = "SELECT * FROM users WHERE user_id = {}".format(user_id)
     cur.execute(query)
@@ -74,6 +73,7 @@ def checkBlacklist(username):
         return False
 
 
+# Get all users in the blacklist
 def getBlacklist(username):
     query = "SELECT reason, date FROM blacklist JOIN users ON blacklist.user_id = users.user_id WHERE username LIKE '{}'".format(
         username)
@@ -92,6 +92,7 @@ def registerUser(username, email, password, role, first_name, last_name):
     return True
 
 
+# Edit profile page
 def editProfile(user_id, description, interest, resume, sample_work, business_credential):
     if description:
         query = "UPDATE users SET description = '{}' WHERE user_id = {}".format(description, user_id)
@@ -177,15 +178,11 @@ def showHistoryClient(user_id):
 def postBid(title, description, start_price, deadline, file, visibility, user_id, budget):
     query1 = "SELECT * FROM users WHERE user_id = {} AND balance >= {}".format(user_id, budget)
     cur.execute(query1)
-    print(cur.fetchall())
     if cur.rowcount:
         query = "INSERT INTO post (title, proj_description, start_price, file, visibility, client_id, project_days) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
             title, description, start_price, file, visibility, user_id, deadline)
-        print(query)
         cur.execute(query)
-        print(type(deadline))
         query2 = "UPDATE post SET deadline = DATE_ADD(deadline, INTERVAL 7 DAY)"
-        print(query2)
         cur.execute(query2)
         print("Inserted to post database successfully")
         return True
@@ -228,6 +225,7 @@ def showPostBids(job_id):
     return data
 
 
+# Add one everytime someone visits a post
 def appendClicks(job_id):
     # Append clicks
     query = "UPDATE post SET clicks = clicks + 1 WHERE job_id = {}".format(job_id)
@@ -251,6 +249,7 @@ def newBid(job_id, dev_id, price):
         return True
 
 
+# Increment bid every time someone bids
 def incrementBid(job_id):
     query = "UPDATE post SET bids = bids + 1 WHERE job_id = {}".format(job_id)
     cur.execute(query)
@@ -258,6 +257,7 @@ def incrementBid(job_id):
     return True
 
 
+# Get top 3 bids
 def top3Bids():
     query = "SELECT * from post WHERE NOT EXISTS (SELECT job_id FROM project WHERE post.job_id = project.job_id) ORDER BY clicks DESC LIMIT 3"
     cur.execute(query)
@@ -266,15 +266,16 @@ def top3Bids():
     return data
 
 
+# Get top 3 developers
 def top3Devs():
     query = "SELECT * from users WHERE role = 'd' AND confirmed = 1 ORDER BY rating DESC LIMIT 3"
     cur.execute(query)
     data = cur.fetchall()
     print("Top 3 developers loaded")
-    print(data)
     return data
 
 
+# Get top 3 clients
 def top3Clients():
     query = "SELECT * from users WHERE role = 'c' AND confirmed = 1 ORDER BY rating DESC LIMIT 3"
     cur.execute(query)
@@ -299,7 +300,6 @@ def adminUsers():
     cur.execute(query)
     data = cur.fetchall()
     print("All Users not on blacklist loaded")
-    print(data)
     return data
 
 
@@ -309,7 +309,6 @@ def adminUnconfirmed():
     cur.execute(query)
     data = cur.fetchall()
     print("All unconfirmed users loaded")
-    print(data)
     return data
 
 
@@ -319,7 +318,6 @@ def adminProjReport():
     cur.execute(query)
     data = cur.fetchall()
     print("All reported projects loaded")
-    print(data)
     return data
 
 
@@ -329,7 +327,6 @@ def adminWarning():
     cur.execute(query)
     data = cur.fetchall()
     print("All warned users loaded")
-    print(data)
     return data
 
 
@@ -427,6 +424,7 @@ def withdrawMoney(username, amount):
 
 #######################################################################################################
 ######################## Functions for project creation and submission #########################
+# Return all projects (ongoing and pending)
 def allProjects():
     query = "SELECT project.job_id, title, status, final_price, u1.first_name, u1.last_name, u2.first_name, u2.last_name FROM project JOIN users u1 ON project.dev_id = u1.user_id JOIN users u2 ON project.client_id = u2.user_id JOIN post ON project.job_id = post.job_id WHERE status = 'Ongoing' OR status = 'Pending'"
     cur.execute(query)
@@ -443,6 +441,7 @@ def checkProjectBalance(client_id, price):
         return False
 
 
+# Create a project
 def createProject(job_id, dev_id, client_id, price, project_days):
     query = "INSERT INTO project (job_id, status, final_price, dev_id, client_id) VALUES ({}, 'Ongoing', {}, {}, {})".format(
         job_id, price, dev_id, client_id)
@@ -469,6 +468,7 @@ def createProject(job_id, dev_id, client_id, price, project_days):
     return True
 
 
+# Return project information with job_id
 def findProject(job_id):
     query = "SELECT * FROM project WHERE job_id = {}".format(job_id)
     cur.execute(query)
@@ -476,6 +476,7 @@ def findProject(job_id):
     return data
 
 
+# Return project information but with a developer
 def findProjectAndDev(job_id):
     query = "SELECT job_id, status, final_price, dev_id, client_id, dev_rating_desc, client_id, submit_text, submit_file, user_id, username, first_name, last_name, client_rating_desc, dev_rating, client_rating FROM project JOIN users ON project.dev_id = users.user_id WHERE job_id = {}".format(
         job_id)
@@ -484,6 +485,7 @@ def findProjectAndDev(job_id):
     return data
 
 
+# Return due date of a project
 def findProjectDueDate(job_id):
     query = "SELECT job_id, create_time, due_date FROM project WHERE job_id = {}".format(job_id)
     cur.execute(query)
@@ -491,6 +493,7 @@ def findProjectDueDate(job_id):
     return data
 
 
+# Used for project submission
 def submitProject(job_id, dev_id, description, file):
     query1 = "SET SQL_SAFE_UPDATES = 0"
     cur.execute(query1)
@@ -513,6 +516,7 @@ def giveProjectReviewForDeveloper(job_id, user_id, description, rating, status):
     return True
 
 
+# Used for transferring remaining balance from admin to developer
 def developerTransferRemaining(job_id, user_id):
     final_price = findProject(job_id)[2]
     admin_cut = float(final_price) * 0.05
@@ -569,7 +573,6 @@ def grandUsers():
     query = "SELECT COUNT(*) FROM users"
     cur.execute(query)
     data = cur.fetchone()[0]
-    print(data)
     return data
 
 
@@ -578,7 +581,6 @@ def grandClients():
     query = "SELECT COUNT(*) FROM users WHERE role = 'c'"
     cur.execute(query)
     data = cur.fetchone()[0]
-    print(data)
     return data
 
 
@@ -587,7 +589,6 @@ def grandDevs():
     query = "SELECT COUNT(*) FROM users WHERE role = 'd'"
     cur.execute(query)
     data = cur.fetchone()[0]
-    print(data)
     return data
 
 
@@ -596,7 +597,6 @@ def bestClient():
     query = "SELECT * FROM users WHERE finished_projects = (SELECT MAX(finished_projects) FROM USERS WHERE role = 'c') AND confirmed = 1 AND role = 'c'"
     cur.execute(query)
     data = cur.fetchall()
-    print(data)
     return data
 
 
@@ -605,7 +605,6 @@ def bestDeveloper():
     query = "SELECT * FROM users WHERE finished_projects = (SELECT MAX(finished_projects) FROM USERS WHERE role = 'd') AND confirmed = 1 AND role = 'd'"
     cur.execute(query)
     data = cur.fetchall()
-    print(data)
     return data
 
 
@@ -630,7 +629,6 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     print("Login Page")
-    # TODO: Check if the email is on blacklist
     error = None
     if request.method == 'POST':
         username = request.form['username']
@@ -718,7 +716,6 @@ def dashboard():
             active_bids = ''
             curr_projects = ''
             history = ''
-        print(session['confirmed'])
         if session['confirmed'] != 0:
             confirmed_user = True
         elif session['confirmed'] == 0:
@@ -732,7 +729,6 @@ def dashboard():
         session['business_credential'] = getUser(session['username'])[12]
         session['balance'] = getUser(session['username'])[13]
 
-        print(confirmed_user)
         if role == 'Client':
             return render_template("dashboard.html", confirmed=confirmed_user, isValidUser=isValidUser, role=role,
                                    client=True, active_bids=active_bids, curr_projects=curr_projects, history=history)
@@ -818,16 +814,6 @@ def compose():
         balance = request.form['start_price']
         description = description.replace("'", "''")
         title = title.replace("'", "''")
-        print('FDSAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-        print(type(description))
-        print(type(file))
-        print(title)
-        print(description)
-        print(start_price)
-        print(deadline)
-        print(file)
-        print(visibility)
-        print(user_id)
         if postBid(title, description, start_price, deadline, file, visibility, user_id, balance):
             posting = showLatestPostByClient(session['user_id'])
             return render_template("post.html", post=posting)
@@ -924,8 +910,6 @@ def admin_takeaction(project_id):
         dev_id = findProject(project_id)[3]
         client_id = findProject(project_id)[4]
         price = findProject(project_id)[2]
-        print('MONEY')
-        print(money)
         adminTakeAction(project_id, dev_rating, client_rating, old_dev_rating, old_client_rating, dev_id, client_id, money, price)
         session['balance'] = getUser(session['username'])[13]
         return redirect(url_for('admin'))
@@ -951,9 +935,6 @@ def postings():
     if request.method == 'POST':
         search_input = request.form['search']
         posts_result = postSearch(search_input)
-        print("FDSAFASDFASDFASDFASDF")
-        print(search_input)
-        print(posts_result)
         return render_template("postings.html", posts=posts_result)
     return render_template("postings.html", posts=posts)
 
@@ -985,9 +966,6 @@ def allProject():
     if request.method == 'POST':
         search_input = request.form['search']
         project_result = projectSearch(search_input)
-        print("FDSAFASDFASDFASDFASDF")
-        print(search_input)
-        print(project_result)
         return render_template("project_all.html", posts=project_result)
     return render_template('project_all.html', posts=projects)
 
@@ -1007,8 +985,6 @@ def project(job_id):
 def projectCreate(job_id, dev_name, price, project_days):
     client_id = session['user_id']
     dev_id = getUser(dev_name)[0]
-    print("GASGFDSGDSFGSDFGSDFGSDFGDSFGDSFGDF")
-    print(bool(checkProjectBalance(client_id, price)))
     if checkProjectBalance(client_id, price):
         createProject(job_id, dev_id, client_id, price, project_days)
         session['balance'] = getUser(session['username'])[13]
@@ -1049,7 +1025,6 @@ def projectReview(job_id, username):
         description = request.form['description']
         rating = int(request.form['rating'])
         role = session['role']
-        print(role)
         user_id = getUser(username)[0]
         if role == 'c':
             if rating < 3:
@@ -1097,8 +1072,6 @@ def deposit():
     if request.method == 'POST':
         amount = request.form['balance']
         username = session['username']
-        print(amount)
-        print(username)
         depositMoney(username, amount)
         return render_template("deposit.html", success=True)
     else:
